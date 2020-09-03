@@ -3,7 +3,8 @@ from setuptools import setup
 
 requirements = (
     'docker',
-    'requests'
+    'requests',
+    'coloredlogs'
 )
 
 dev_requirements = (
