@@ -3,8 +3,8 @@
 import logging
 import argparse
 import coloredlogs
-import xml.etree.ElementTree as ET
 
+from pyogctest.report import Report
 from pyogctest.teamengine import Teamengine
 
 
@@ -34,14 +34,23 @@ if __name__ == "__main__":
     logging.info("Run pyogctest for WMS 1.3.0")
 
     # run OGC tests with Teamengine
-    t = Teamengine(Teamengine.TestSuite.WMS130, args.port)
+    # t = Teamengine(Teamengine.TestSuite.WMS130, args.port)
 
-    logging.debug("Pull docker image")
-    t.pull()
+    # logging.debug("Pull docker image")
+    # t.pull()
 
-    logging.debug("Start container")
-    t.start()
+    # logging.debug("Start container")
+    # t.start()
 
-    logging.debug("Run OGC tests")
-    xml = t.run(args.url)
-    t.stop()
+    # logging.debug("Run OGC tests")
+    # xml = t.run(args.url)
+    # t.stop()
+
+    f = open("report.xml", "r")
+    data = f.read()
+    f.close()
+
+    # parse xml report
+    logging.debug("Parse XML report")
+    r = Report(data)
+    r.dump()
