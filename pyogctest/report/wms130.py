@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import xml.etree.ElementTree as ET
 
-from .logger import Logger
+from pyogctest.logger import Logger
 
 
 class Test(object):
@@ -12,7 +12,7 @@ class Test(object):
         self.result = ""
         self.exception = ""
 
-class Report(object):
+class ParserWMS130(object):
 
     def __init__(self, xml, duration):
         self.xml = xml

@@ -4,7 +4,7 @@ import datetime
 import argparse
 
 from pyogctest.logger import Logger
-from pyogctest.report import Report
+from pyogctest.report.report import Report
 from pyogctest.teamengine import Teamengine
 
 
@@ -33,7 +33,8 @@ if __name__ == "__main__":
 
     # run OGC tests with Teamengine
     start = datetime.datetime.now()
-    t = Teamengine(Teamengine.TestSuite.WMS130, args.port)
+    suite = Teamengine.TestSuite.WMS130
+    t = Teamengine(suite, args.port)
 
     Logger.debug("Pull docker image")
     t.pull()
@@ -46,13 +47,12 @@ if __name__ == "__main__":
     t.stop()
     end = datetime.datetime.now()
 
-    print(xml)
-
-    # f = open("report.xml", "r")
+    f = open("report2.xml", "w")
+    f.write(xml)
     # xml = f.read()
-    # f.close()
+    f.close()
 
     # parse xml report
     Logger.debug("Parse XML report")
-    r = Report(xml, (end-start).seconds)
+    r = Report(suite, xml, (end-start).seconds)
     r.dump()
