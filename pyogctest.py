@@ -24,6 +24,8 @@ if __name__ == "__main__":
 
     parser.add_argument("-v", "--verbose", help="Verbose mode", action="store_true")
 
+    parser.add_argument("-s", "--suite", help="Test suite", type=Teamengine.TestSuite, choices=list(Teamengine.TestSuite), default=Teamengine.TestSuite.WMS130)
+
     args = parser.parse_args()
 
     # init logging
@@ -33,8 +35,7 @@ if __name__ == "__main__":
 
     # run OGC tests with Teamengine
     start = datetime.datetime.now()
-    suite = Teamengine.TestSuite.WMS130
-    t = Teamengine(suite, args.port)
+    t = Teamengine(args.suite, args.port)
 
     Logger.debug("Pull docker image")
     t.pull()
@@ -54,5 +55,5 @@ if __name__ == "__main__":
 
     # parse xml report
     Logger.debug("Parse XML report")
-    r = Report(suite, xml, (end - start).seconds)
+    r = Report(args.suite, xml, (end - start).seconds)
     r.dump(args.verbose)

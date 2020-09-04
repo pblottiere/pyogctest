@@ -10,9 +10,13 @@ OGCCITE_WMS130 = "ogccite/ets-wms13"
 
 
 class Teamengine(object):
+
     class TestSuite(Enum):
 
-        WMS130 = 0
+        WMS130 = "wms130"
+
+        def __str__(self):
+            return self.value
 
     def __init__(self, suite, port=8080):
         self.suite = suite
