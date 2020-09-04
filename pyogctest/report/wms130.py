@@ -43,27 +43,32 @@ class ParserWMS130(object):
             test = self._test(t[0])
 
             if "data-independent" in names:
-                test.name = '.'.join(names[1:])
+                test.name = '::'.join(names[1:])
                 data_independent.append(test)
             elif "basic" in names:
-                test.name = '.'.join(names[1:])
+                test.name = '::'.join(names[1:])
                 basic.append(test)
             elif "queryable" in names:
-                test.name = '.'.join(names[1:])
+                test.name = '::'.join(names[1:])
                 queryable.append(test)
-
             elif "recommendations" in names:
-                test.name = '.'.join(names[1:])
+                test.name = '::'.join(names[1:])
                 recommendations.append(test)
             elif "data-preconditions" in names:
-                test.name = '.'.join(names[1:])
+                test.name = '::'.join(names[1:])
                 data_preconditions.append(test)
             else:
-                test.name = '.'.join(names)
+                test.name = '::'.join(names)
                 others.append(test)
 
         if verbose:
-            pass
+            self._print_verbose(data_independent, "data-independent")
+            self._print_verbose(data_preconditions, "data-preconditions")
+            self._print_verbose(basic, "basic")
+            self._print_verbose(recommendations, "recommendations")
+            self._print_verbose(queryable, "queryable")
+            if others:
+                self._print_verbose(others, "main")
         else:
             self._print_normal(data_independent, "data-independent")
             self._print_normal(data_preconditions, "data-preconditions")
@@ -87,6 +92,15 @@ class ParserWMS130(object):
                 failures.append(test)
 
         return failures, successes
+
+    def _print_verbose(self, tests, name):
+        for test in tests:
+            result = ""
+            if test.result == "1":
+                result = test.name + Logger.Symbol.OK + " PASSED" + Logger.Symbol.ENDC
+            else:
+                result = test.name + Logger.Symbol.FAIL + " FAIL" + Logger.Symbol.ENDC
+            Logger.log(result)
 
     def _print_normal(self, tests, name):
         results = ""
