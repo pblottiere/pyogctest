@@ -5,7 +5,6 @@ from pyogctest.logger import Logger
 
 
 class Test(object):
-
     def __init__(self):
         self.name = ""
         self.assertion = ""
@@ -16,7 +15,6 @@ class Test(object):
 
 
 class ParserWMS130(object):
-
     def __init__(self, xml, duration):
         self.xml = xml
         self.duration = duration
@@ -43,22 +41,22 @@ class ParserWMS130(object):
             test = self._test(t[0])
 
             if "data-independent" in names:
-                test.name = '::'.join(names[1:])
+                test.name = "::".join(names[1:])
                 data_independent.append(test)
             elif "basic" in names:
-                test.name = '::'.join(names[1:])
+                test.name = "::".join(names[1:])
                 basic.append(test)
             elif "queryable" in names:
-                test.name = '::'.join(names[1:])
+                test.name = "::".join(names[1:])
                 queryable.append(test)
             elif "recommendations" in names:
-                test.name = '::'.join(names[1:])
+                test.name = "::".join(names[1:])
                 recommendations.append(test)
             elif "data-preconditions" in names:
-                test.name = '::'.join(names[1:])
+                test.name = "::".join(names[1:])
                 data_preconditions.append(test)
             else:
-                test.name = '::'.join(names)
+                test.name = "::".join(names)
                 others.append(test)
 
         if verbose:
@@ -78,7 +76,14 @@ class ParserWMS130(object):
             if others:
                 self._print_normal(others, "main")
 
-        results = [data_preconditions, data_independent, basic, recommendations, queryable, others]
+        results = [
+            data_preconditions,
+            data_independent,
+            basic,
+            recommendations,
+            queryable,
+            others,
+        ]
 
         self._print_summary(results)
 
@@ -129,7 +134,7 @@ class ParserWMS130(object):
 
             for failure in failures:
                 name = " {} ".format(failure.name)
-                Logger.log(name, color=Logger.Symbol.FAIL, center=True, symbol='_')
+                Logger.log(name, color=Logger.Symbol.FAIL, center=True, symbol="_")
                 Logger.log("")
 
                 Logger.log("Assertion: {}".format(failure.assertion))
@@ -147,7 +152,9 @@ class ParserWMS130(object):
                     Logger.log("Method: {}".format(failure.method))
                     Logger.log("")
 
-            msg = " {} passed, {} failed in {} seconds ".format(len(successes), len(failures), self.duration)
+            msg = " {} passed, {} failed in {} seconds ".format(
+                len(successes), len(failures), self.duration
+            )
             Logger.log(msg, color=Logger.Symbol.WARNING, center=True, symbol="=")
 
     def _parse(self):
@@ -187,7 +194,7 @@ class ParserWMS130(object):
     def _father_path(self, node):
         path = self._path(node)
         if path:
-            return '/'.join(path.split("/")[:-1])
+            return "/".join(path.split("/")[:-1])
         return None
 
     def _has_child(self, node):
@@ -217,7 +224,9 @@ class ParserWMS130(object):
                                 t.url = ccc.text
 
                             if "param" in ccc.tag:
-                                t.url = "{}{}={}&".format(t.url, ccc.attrib["name"], ccc.text)
+                                t.url = "{}{}={}&".format(
+                                    t.url, ccc.attrib["name"], ccc.text
+                                )
 
                             if "method" in ccc.tag:
                                 t.method = ccc.text

@@ -5,12 +5,11 @@ import requests
 from enum import Enum
 
 
-NAME="pyogctest"
-OGCCITE_WMS130="ogccite/ets-wms13"
+NAME = "pyogctest"
+OGCCITE_WMS130 = "ogccite/ets-wms13"
 
 
 class Teamengine(object):
-
     class TestSuite(Enum):
 
         WMS130 = 0
@@ -30,9 +29,10 @@ class Teamengine(object):
         self.stop()
 
         client = docker.from_env()
-        client.containers.run(self.image, detach=True, ports={8080: self.port}, name=NAME, remove=True)
+        client.containers.run(
+            self.image, detach=True, ports={8080: self.port}, name=NAME, remove=True
+        )
         time.sleep(5)  # teamengine takes some time to start
-
 
     def stop(self):
         client = docker.from_env()
@@ -48,15 +48,20 @@ class Teamengine(object):
         request = None
 
         if self.suite == Teamengine.TestSuite.WMS130:
-            getcapa = "{}?REQUEST=GetCapabilities%26VERSION=1.3.0%26SERVICE=WMS".format(url)
-            teamengine = "http://localhost:{}/teamengine/rest/suites/wms13/run".format(self.port)
+            getcapa = "{}?REQUEST=GetCapabilities%26VERSION=1.3.0%26SERVICE=WMS".format(
+                url
+            )
+            teamengine = "http://localhost:{}/teamengine/rest/suites/wms13/run".format(
+                self.port
+            )
 
-            request = ('{0}?queryable=queryable&basic=basic&recommended=recommended&'
-                       'capabilities-url={1}'
-                       .format(teamengine, getcapa))
+            request = (
+                "{0}?queryable=queryable&basic=basic&recommended=recommended&"
+                "capabilities-url={1}".format(teamengine, getcapa)
+            )
 
         if request:
-            r = requests.get(request, headers={'Accept': 'application/xml'})
+            r = requests.get(request, headers={"Accept": "application/xml"})
             return r.text
 
         return None
