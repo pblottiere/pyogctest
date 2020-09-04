@@ -3,7 +3,7 @@ import re
 import xml.etree.ElementTree as ET
 
 from pyogctest.logger import Logger
-
+from pyogctest.report.format import Format
 
 class Test(object):
     def __init__(self):
@@ -21,7 +21,11 @@ class ParserWMS130(object):
         self.duration = duration
         self._parse()
 
-    def dump(self, verbose, regex):
+    def dump(self, verbose, regex, format):
+        if format == Format.PROMPT:
+            self._dump_prompt(verbose, regex)
+
+    def _dump_prompt(self, verbose, regex):
         Logger.log("collected {} items".format(len(self.tree)), bold=True)
         Logger.log("")
 

@@ -4,6 +4,7 @@ import datetime
 import argparse
 
 from pyogctest.logger import Logger
+from pyogctest.report.format import Format
 from pyogctest.report.report import Report
 from pyogctest.teamengine import Teamengine
 
@@ -26,10 +27,12 @@ if __name__ == "__main__":
 
     parser.add_argument("-r", "--regex", help="Regular expression", type=str, default="")
 
+    parser.add_argument("-f", "--format", help="Output format (default: prompt)", type=Format, choices=list(Format), default=Format.PROMPT)
+
     parser.add_argument(
         "-s",
         "--suite",
-        help="Test suite",
+        help="Test suite (default: WMS130)",
         type=Teamengine.TestSuite,
         choices=list(Teamengine.TestSuite),
         default=Teamengine.TestSuite.WMS130,
@@ -65,4 +68,4 @@ if __name__ == "__main__":
     # parse xml report
     Logger.debug("Parse XML report")
     r = Report(args.suite, xml, (end - start).seconds)
-    r.dump(args.verbose, args.regex)
+    r.dump(args.verbose, args.regex, args.format)
