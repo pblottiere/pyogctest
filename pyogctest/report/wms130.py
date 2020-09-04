@@ -11,6 +11,9 @@ class Test(object):
         self.assertion = ""
         self.result = ""
         self.exception = ""
+        self.url = ""
+        self.method = ""
+
 
 class ParserWMS130(object):
 
@@ -34,16 +37,18 @@ class ParserWMS130(object):
         for t in self.tree:
             names = []
             for e in t:
-                name, prefix, path, result, assertion, exception = self._info(e)
+                name, prefix, path, result, assertion, exception, url, method = self._info(e)
                 names.append(name)
 
-            name, prefix, path, result, assertion, exception = self._info(t[0])
+            name, prefix, path, result, assertion, exception, url, method = self._info(t[0])
             names.reverse()
 
             test = Test()
             test.assertion = assertion
             test.result = result
             test.exception = exception
+            test.url = url
+            test.method = method
 
             if "data-independent" in names:
                 test.name = '.'.join(names[1:])
@@ -90,8 +95,17 @@ class ParserWMS130(object):
                 Logger.log("Assertion: {}".format(failure.assertion))
                 Logger.log("")
 
-                Logger.log("Error: {}".format(failure.exception))
-                Logger.log("")
+                if failure.exception:
+                    Logger.log("Error: {}".format(failure.exception))
+                    Logger.log("")
+
+                if failure.url:
+                    Logger.log("URL: {}".format(failure.url))
+                    Logger.log("")
+
+                if failure.method:
+                    Logger.log("Method: {}".format(failure.method))
+                    Logger.log("")
 
     def _dump(self, tests, name):
         failures = []
@@ -158,6 +172,8 @@ class ParserWMS130(object):
         path = ""
         result = ""
         exception = ""
+        url = ""
+        method = ""
 
         for child in node:
             if child.tag == "starttest":
@@ -169,6 +185,19 @@ class ParserWMS130(object):
                     if cc.tag == "assertion":
                         assertion = cc.text
 
+            if child.tag == "request":
+                for cc in child:
+                    if "request" in cc.tag:
+                        for ccc in cc:
+                            if "url" in ccc.tag:
+                                url = ccc.text
+
+                            if "param" in ccc.tag:
+                                url = "{}{}={}&".format(url, ccc.attrib["name"], ccc.text)
+
+                            if "method" in ccc.tag:
+                                method = ccc.text
+
             if child.tag == "endtest":
                 result = child.attrib["result"]
 
@@ -177,4 +206,4 @@ class ParserWMS130(object):
             if child.tag == "message":
                 exception = child.text.replace("Error: ", "")
 
-        return name, prefix, path, result, assertion, exception
+        return name, prefix, path, result, assertion, exception, url, method

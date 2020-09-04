@@ -47,10 +47,10 @@ if __name__ == "__main__":
     t.stop()
     end = datetime.datetime.now()
 
-    f = open("report2.xml", "w")
-    f.write(xml)
+    # f = open("report.xml", "r")
+    # f.write(xml)
     # xml = f.read()
-    f.close()
+    # f.close()
 
     # parse xml report
     Logger.debug("Parse XML report")
