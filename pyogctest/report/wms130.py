@@ -79,6 +79,7 @@ class ParserWMS130(object):
                 self._print_normal(others, "main")
 
         results = [data_preconditions, data_independent, basic, recommendations, queryable, others]
+
         self._print_summary(results)
 
     def _results(self, tests):
@@ -145,6 +146,9 @@ class ParserWMS130(object):
                 if failure.method:
                     Logger.log("Method: {}".format(failure.method))
                     Logger.log("")
+
+            msg = " {} passed, {} failed in {} seconds ".format(len(successes), len(failures), self.duration)
+            Logger.log(msg, color=Logger.Symbol.WARNING, center=True, symbol="=")
 
     def _parse(self):
 
