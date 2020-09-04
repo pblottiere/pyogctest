@@ -4,6 +4,14 @@ import xml.etree.ElementTree as ET
 from .logger import Logger
 
 
+class Test(object):
+
+    def __init__(self):
+        self.name = ""
+        self.assertion = ""
+        self.result = ""
+        self.exception = ""
+
 class Report(object):
 
     def __init__(self, xml, duration):
@@ -13,7 +21,6 @@ class Report(object):
 
     def dump(self, mode=""):
         n = len(self.tree)
-        print(self.tree)
         Logger.log("collected {} items".format(n), bold=True)
         Logger.log("")
 
@@ -27,30 +34,36 @@ class Report(object):
         for t in self.tree:
             names = []
             for e in t:
-                name, prefix, path, result, assertion = self._info(e)
+                name, prefix, path, result, assertion, exception = self._info(e)
                 names.append(name)
 
-            name, prefix, path, result, assertion = self._info(t[0])
+            name, prefix, path, result, assertion, exception = self._info(t[0])
             names.reverse()
 
+            test = Test()
+            test.assertion = assertion
+            test.result = result
+            test.exception = exception
+
             if "data-independent" in names:
-                names = names[1:]
-                data_independent.append([result, '.'.join(names), assertion])
+                test.name = '.'.join(names[1:])
+                data_independent.append(test)
             elif "basic" in names:
-                names = names[1:]
-                basic.append([result, '.'.join(names), assertion])
+                test.name = '.'.join(names[1:])
+                basic.append(test)
             elif "queryable" in names:
-                names = names[1:]
-                queryable.append([result, '.'.join(names), assertion])
+                test.name = '.'.join(names[1:])
+                queryable.append(test)
 
             elif "recommendations" in names:
-                names = names[1:]
-                recommendations.append([result, '.'.join(names), assertion])
+                test.name = '.'.join(names[1:])
+                recommendations.append(test)
             elif "data-preconditions" in names:
-                names = names[1:]
-                data_preconditions.append([result, '.'.join(names), assertion])
+                test.name = '.'.join(names[1:])
+                data_preconditions.append(test)
             else:
-                others.append([result, '.'.join(names), assertion])
+                test.name = '.'.join(names)
+                others.append(test)
 
         failures = []
         failures += self._dump(data_preconditions, "data-preconditions")
@@ -58,7 +71,9 @@ class Report(object):
         failures += self._dump(basic, "basic")
         failures += self._dump(recommendations, "recommendations")
         failures += self._dump(queryable, "queryable")
-        failures += self._dump(others, "others")
+
+        if others:
+            failures += self._dump(others, "main")
 
         Logger.log("")
         if not failures:
@@ -68,20 +83,21 @@ class Report(object):
             Logger.log(" FAILURES ", center=True, symbol="=")
 
             for failure in failures:
-                name = " {} ".format(failure[1])
+                name = " {} ".format(failure.name)
                 Logger.log(name, color=Logger.Symbol.FAIL, center=True, symbol='_')
                 Logger.log("")
 
-                assertion = failure[2]
-                Logger.log("Assertion: {}".format(assertion))
+                Logger.log("Assertion: {}".format(failure.assertion))
+                Logger.log("")
+
+                Logger.log("Error: {}".format(failure.exception))
                 Logger.log("")
 
     def _dump(self, tests, name):
         failures = []
         results = ""
         for test in tests:
-            result = test[0]
-            if result == "1":
+            if test.result == "1":
                 results = results + Logger.Symbol.OK + "." + Logger.Symbol.ENDC
             else:
                 results = results + Logger.Symbol.FAIL + "F" + Logger.Symbol.ENDC
@@ -141,6 +157,7 @@ class Report(object):
         prefix = ""
         path = ""
         result = ""
+        exception = ""
 
         for child in node:
             if child.tag == "starttest":
@@ -155,4 +172,9 @@ class Report(object):
             if child.tag == "endtest":
                 result = child.attrib["result"]
 
-        return name, prefix, path, result, assertion
+            if child.tag == "exception":
+                exception = child.text
+            if child.tag == "message":
+                exception = child.text.replace("Error: ", "")
+
+        return name, prefix, path, result, assertion, exception
