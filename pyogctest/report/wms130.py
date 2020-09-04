@@ -36,18 +36,11 @@ class ParserWMS130(object):
         for t in self.tree:
             names = []
             for e in t:
-                name, prefix, path, result, assertion, exception, url, method = self._info(e)
-                names.append(name)
-
-            name, prefix, path, result, assertion, exception, url, method = self._info(t[0])
+                test = self._test(e)
+                names.append(test.name)
             names.reverse()
 
-            test = Test()
-            test.assertion = assertion
-            test.result = result
-            test.exception = exception
-            test.url = url
-            test.method = method
+            test = self._test(t[0])
 
             if "data-independent" in names:
                 test.name = '.'.join(names[1:])
@@ -69,46 +62,19 @@ class ParserWMS130(object):
                 test.name = '.'.join(names)
                 others.append(test)
 
-        failures = []
-        successes = []
-
-        f, s = self._results(data_preconditions)
-        failures += f
-        successes += s
-
-        f, s = self._results(data_independent)
-        failures += f
-        successes += s
-
-        f, s = self._results(basic)
-        failures += f
-        successes += s
-
-        f, s = self._results(recommendations)
-        failures += f
-        successes += s
-
-        f, s = self._results(queryable)
-        failures += f
-        successes += s
-
-        if others:
-            f, s = self._results(others)
-            failures += f
-            successes += s
-
         if verbose:
             pass
         else:
-            self._normal(data_independent, "data-independent")
-            self._normal(data_preconditions, "data-preconditions")
-            self._normal(basic, "basic")
-            self._normal(recommendations, "recommendations")
-            self._normal(recommendations, "queryable")
+            self._print_normal(data_independent, "data-independent")
+            self._print_normal(data_preconditions, "data-preconditions")
+            self._print_normal(basic, "basic")
+            self._print_normal(recommendations, "recommendations")
+            self._print_normal(recommendations, "queryable")
             if others:
-                self._normal(others, "main")
+                self._print_normal(others, "main")
 
-        self._summary(failures, successes)
+        results = [data_preconditions, data_independent, basic, recommendations, queryable, others]
+        self._print_summary(results)
 
     def _results(self, tests):
         failures = []
@@ -122,7 +88,7 @@ class ParserWMS130(object):
 
         return failures, successes
 
-    def _normal(self, tests, name):
+    def _print_normal(self, tests, name):
         results = ""
         for test in tests:
             if test.result == "1":
@@ -131,20 +97,14 @@ class ParserWMS130(object):
                 results = results + Logger.Symbol.FAIL + "F" + Logger.Symbol.ENDC
         print("{} {}".format(name, results))
 
-    # def _dump(self, tests, name):
-    #     failures = []
-    #     results = ""
-    #     for test in tests:
-    #         if test.result == "1":
-    #             results = results + Logger.Symbol.OK + "." + Logger.Symbol.ENDC
-    #         else:
-    #             results = results + Logger.Symbol.FAIL + "F" + Logger.Symbol.ENDC
-    #             failures.append(test)
-    #     print("{} {}".format(name, results))
+    def _print_summary(self, results):
+        failures = []
+        successes = []
+        for result in results:
+            f, s = self._results(result)
+            failures += f
+            successes += s
 
-    #     return failures
-
-    def _summary(self, failures, successes):
         Logger.log("")
         if not failures:
             msg = " {} passed in {} seconds ".format(len(successes), self.duration)
@@ -218,44 +178,38 @@ class ParserWMS130(object):
                 return True
         return False
 
-    def _info(self, node):
-        name = ""
-        prefix = ""
-        path = ""
-        result = ""
-        exception = ""
-        url = ""
-        method = ""
+    def _test(self, node):
+        t = Test()
 
         for child in node:
             if child.tag == "starttest":
-                name = child.attrib["local-name"]
+                t.name = child.attrib["local-name"]
                 prefix = child.attrib["prefix"]
-                path = child.attrib["path"]
+                t.path = child.attrib["path"]
 
                 for cc in child:
                     if cc.tag == "assertion":
-                        assertion = cc.text
+                        t.assertion = cc.text
 
             if child.tag == "request":
                 for cc in child:
                     if "request" in cc.tag:
                         for ccc in cc:
                             if "url" in ccc.tag:
-                                url = ccc.text
+                                t.url = ccc.text
 
                             if "param" in ccc.tag:
-                                url = "{}{}={}&".format(url, ccc.attrib["name"], ccc.text)
+                                t.url = "{}{}={}&".format(t.url, ccc.attrib["name"], ccc.text)
 
                             if "method" in ccc.tag:
-                                method = ccc.text
+                                t.method = ccc.text
 
             if child.tag == "endtest":
-                result = child.attrib["result"]
+                t.result = child.attrib["result"]
 
             if child.tag == "exception":
-                exception = child.text
+                t.exception = child.text
             if child.tag == "message":
-                exception = child.text.replace("Error: ", "")
+                t.exception = child.text.replace("Error: ", "")
 
-        return name, prefix, path, result, assertion, exception, url, method
+        return t
