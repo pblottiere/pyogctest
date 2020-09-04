@@ -22,9 +22,8 @@ class ParserWMS130(object):
         self.duration = duration
         self._parse()
 
-    def dump(self, mode=""):
-        n = len(self.tree)
-        Logger.log("collected {} items".format(n), bold=True)
+    def dump(self, verbose):
+        Logger.log("collected {} items".format(len(self.tree)), bold=True)
         Logger.log("")
 
         others = []
@@ -71,18 +70,84 @@ class ParserWMS130(object):
                 others.append(test)
 
         failures = []
-        failures += self._dump(data_preconditions, "data-preconditions")
-        failures += self._dump(data_independent, "data-independent")
-        failures += self._dump(basic, "basic")
-        failures += self._dump(recommendations, "recommendations")
-        failures += self._dump(queryable, "queryable")
+        successes = []
+
+        f, s = self._results(data_preconditions)
+        failures += f
+        successes += s
+
+        f, s = self._results(data_independent)
+        failures += f
+        successes += s
+
+        f, s = self._results(basic)
+        failures += f
+        successes += s
+
+        f, s = self._results(recommendations)
+        failures += f
+        successes += s
+
+        f, s = self._results(queryable)
+        failures += f
+        successes += s
 
         if others:
-            failures += self._dump(others, "main")
+            f, s = self._results(others)
+            failures += f
+            successes += s
 
+        if verbose:
+            pass
+        else:
+            self._normal(data_independent, "data-independent")
+            self._normal(data_preconditions, "data-preconditions")
+            self._normal(basic, "basic")
+            self._normal(recommendations, "recommendations")
+            self._normal(recommendations, "queryable")
+            if others:
+                self._normal(others, "main")
+
+        self._summary(failures, successes)
+
+    def _results(self, tests):
+        failures = []
+        successes = []
+        results = ""
+        for test in tests:
+            if test.result == "1":
+                successes.append(test)
+            else:
+                failures.append(test)
+
+        return failures, successes
+
+    def _normal(self, tests, name):
+        results = ""
+        for test in tests:
+            if test.result == "1":
+                results = results + Logger.Symbol.OK + "." + Logger.Symbol.ENDC
+            else:
+                results = results + Logger.Symbol.FAIL + "F" + Logger.Symbol.ENDC
+        print("{} {}".format(name, results))
+
+    # def _dump(self, tests, name):
+    #     failures = []
+    #     results = ""
+    #     for test in tests:
+    #         if test.result == "1":
+    #             results = results + Logger.Symbol.OK + "." + Logger.Symbol.ENDC
+    #         else:
+    #             results = results + Logger.Symbol.FAIL + "F" + Logger.Symbol.ENDC
+    #             failures.append(test)
+    #     print("{} {}".format(name, results))
+
+    #     return failures
+
+    def _summary(self, failures, successes):
         Logger.log("")
         if not failures:
-            msg = " {} passed in {} seconds ".format(n, self.duration)
+            msg = " {} passed in {} seconds ".format(len(successes), self.duration)
             Logger.log(msg, color=Logger.Symbol.OK, center=True, symbol="=")
         else:
             Logger.log(" FAILURES ", center=True, symbol="=")
@@ -106,19 +171,6 @@ class ParserWMS130(object):
                 if failure.method:
                     Logger.log("Method: {}".format(failure.method))
                     Logger.log("")
-
-    def _dump(self, tests, name):
-        failures = []
-        results = ""
-        for test in tests:
-            if test.result == "1":
-                results = results + Logger.Symbol.OK + "." + Logger.Symbol.ENDC
-            else:
-                results = results + Logger.Symbol.FAIL + "F" + Logger.Symbol.ENDC
-                failures.append(test)
-        print("{} {}".format(name, results))
-
-        return failures
 
     def _parse(self):
 
