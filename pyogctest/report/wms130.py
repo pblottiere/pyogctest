@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 import xml.etree.ElementTree as ET
 
 from pyogctest.logger import Logger
@@ -20,7 +21,7 @@ class ParserWMS130(object):
         self.duration = duration
         self._parse()
 
-    def dump(self, verbose):
+    def dump(self, verbose, regex):
         Logger.log("collected {} items".format(len(self.tree)), bold=True)
         Logger.log("")
 
@@ -60,13 +61,13 @@ class ParserWMS130(object):
                 others.append(test)
 
         if verbose:
-            self._print_verbose(data_independent, "data-independent")
-            self._print_verbose(data_preconditions, "data-preconditions")
-            self._print_verbose(basic, "basic")
-            self._print_verbose(recommendations, "recommendations")
-            self._print_verbose(queryable, "queryable")
+            self._print_verbose(data_independent, "data-independent", regex)
+            self._print_verbose(data_preconditions, "data-preconditions", regex)
+            self._print_verbose(basic, "basic", regex)
+            self._print_verbose(recommendations, "recommendations", regex)
+            self._print_verbose(queryable, "queryable", regex)
             if others:
-                self._print_verbose(others, "main")
+                self._print_verbose(others, "main", regex)
         else:
             self._print_normal(data_independent, "data-independent")
             self._print_normal(data_preconditions, "data-preconditions")
@@ -99,8 +100,11 @@ class ParserWMS130(object):
 
         return failures, successes
 
-    def _print_verbose(self, tests, name):
+    def _print_verbose(self, tests, name, regex):
         for test in tests:
+            if regex not in test.name:
+                continue
+
             result = ""
             if test.result == "1":
                 result = test.name + Logger.Symbol.OK + " PASSED" + Logger.Symbol.ENDC

@@ -9,5 +9,5 @@ class Report(object):
         if suite == Teamengine.TestSuite.WMS130:
             self.parser = ParserWMS130(xml, duration)
 
-    def dump(self, verbose):
-        self.parser.dump(verbose)
+    def dump(self, verbose, regex):
+        self.parser.dump(verbose, regex)

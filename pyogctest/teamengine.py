@@ -10,7 +10,6 @@ OGCCITE_WMS130 = "ogccite/ets-wms13"
 
 
 class Teamengine(object):
-
     class TestSuite(Enum):
 
         WMS130 = "wms130"

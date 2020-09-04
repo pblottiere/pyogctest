@@ -24,7 +24,16 @@ if __name__ == "__main__":
 
     parser.add_argument("-v", "--verbose", help="Verbose mode", action="store_true")
 
-    parser.add_argument("-s", "--suite", help="Test suite", type=Teamengine.TestSuite, choices=list(Teamengine.TestSuite), default=Teamengine.TestSuite.WMS130)
+    parser.add_argument("-r", "--regex", help="Regular expression", type=str, default="")
+
+    parser.add_argument(
+        "-s",
+        "--suite",
+        help="Test suite",
+        type=Teamengine.TestSuite,
+        choices=list(Teamengine.TestSuite),
+        default=Teamengine.TestSuite.WMS130,
+    )
 
     args = parser.parse_args()
 
@@ -56,4 +65,4 @@ if __name__ == "__main__":
     # parse xml report
     Logger.debug("Parse XML report")
     r = Report(args.suite, xml, (end - start).seconds)
-    r.dump(args.verbose)
+    r.dump(args.verbose, args.regex)
