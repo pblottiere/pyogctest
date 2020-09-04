@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os
 import datetime
-import logging
 import argparse
-import coloredlogs
 
+from pyogctest.logger import Logger
 from pyogctest.report import Report
 from pyogctest.teamengine import Teamengine
 
@@ -29,37 +27,32 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # init logging
-    rows, columns = os.popen('stty size', 'r').read().split()
-    width = ":=^{}".format(columns)
-    msg = "\033[1m{{{}}}\033[0m".format(width)
-    print(msg.format(' OGC test session starts '))
-    print("testsuite: WMS 1.3.0")
-
-    level = logging.INFO
-    if args.debug:
-        level = logging.DEBUG
-    coloredlogs.install(level=level)
+    Logger.init(args.debug)
+    Logger.log(" OGC test session starts ", center=True, symbol="=")
+    Logger.log("testsuite: WMS 1.3.0")
 
     # run OGC tests with Teamengine
     start = datetime.datetime.now()
     t = Teamengine(Teamengine.TestSuite.WMS130, args.port)
 
-    logging.debug("Pull docker image")
+    Logger.debug("Pull docker image")
     t.pull()
 
-    logging.debug("Start container")
+    Logger.debug("Start container")
     t.start()
 
-    logging.debug("Run OGC tests")
+    Logger.debug("Run OGC tests")
     xml = t.run(args.url)
     t.stop()
     end = datetime.datetime.now()
+
+    print(xml)
 
     # f = open("report.xml", "r")
     # xml = f.read()
     # f.close()
 
     # parse xml report
-    logging.debug("Parse XML report")
+    Logger.debug("Parse XML report")
     r = Report(xml, (end-start).seconds)
     r.dump()

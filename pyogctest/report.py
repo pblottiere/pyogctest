@@ -1,17 +1,7 @@
 # -*- coding: utf-8 -*-
-import os
 import xml.etree.ElementTree as ET
 
-
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+from .logger import Logger
 
 
 class Report(object):
@@ -22,9 +12,12 @@ class Report(object):
         self._parse()
 
     def dump(self, mode=""):
-        print("\033[1mcollected {} items\033[0m".format(len(self.tree)))
-        print("")
+        n = len(self.tree)
+        print(self.tree)
+        Logger.log("collected {} items".format(n), bold=True)
+        Logger.log("")
 
+        others = []
         data_independent = []
         basic = []
         queryable = []
@@ -39,22 +32,25 @@ class Report(object):
 
             name, prefix, path, result, assertion = self._info(t[0])
             names.reverse()
-            names = names[1:]
 
             if "data-independent" in names:
+                names = names[1:]
                 data_independent.append([result, '.'.join(names), assertion])
-
-            if "basic" in names:
+            elif "basic" in names:
+                names = names[1:]
                 basic.append([result, '.'.join(names), assertion])
-
-            if "queryable" in names:
+            elif "queryable" in names:
+                names = names[1:]
                 queryable.append([result, '.'.join(names), assertion])
 
-            if "recommendations" in names:
+            elif "recommendations" in names:
+                names = names[1:]
                 recommendations.append([result, '.'.join(names), assertion])
-
-            if "data-preconditions" in names:
+            elif "data-preconditions" in names:
+                names = names[1:]
                 data_preconditions.append([result, '.'.join(names), assertion])
+            else:
+                others.append([result, '.'.join(names), assertion])
 
         failures = []
         failures += self._dump(data_preconditions, "data-preconditions")
@@ -62,27 +58,23 @@ class Report(object):
         failures += self._dump(basic, "basic")
         failures += self._dump(recommendations, "recommendations")
         failures += self._dump(queryable, "queryable")
+        failures += self._dump(others, "others")
 
-        print("")
-        rows, columns = os.popen('stty size', 'r').read().split()
-
+        Logger.log("")
         if not failures:
-            width = ":=^{}".format(columns)
-            msg = bcolors.OKGREEN + "{{{}}}".format(width) + bcolors.ENDC
-            text = ' {} passed in {} seconds '.format(len(self.tree), self.duration)
-            print(msg.format(text))
+            msg = " {} passed in {} seconds ".format(n, self.duration)
+            Logger.log(msg, color=Logger.Symbol.OK, center=True, symbol="=")
         else:
-            width = ":_^{}".format(columns)
-            msg = "{{{}}}".format(width)
-            print(msg.format(" FAILURES "))
+            Logger.log(" FAILURES ", center=True, symbol="=")
 
             for failure in failures:
-                msg = bcolors.FAIL + "{{{}}}".format(width) + bcolors.ENDC
-                text = " {} ".format(failure[1])
-                print(msg.format( text ))
-                print()
-                print("Assertion: {}".format(failure[2]))
-                print()
+                name = " {} ".format(failure[1])
+                Logger.log(name, color=Logger.Symbol.FAIL, center=True, symbol='_')
+                Logger.log("")
+
+                assertion = failure[2]
+                Logger.log("Assertion: {}".format(assertion))
+                Logger.log("")
 
     def _dump(self, tests, name):
         failures = []
@@ -90,11 +82,12 @@ class Report(object):
         for test in tests:
             result = test[0]
             if result == "1":
-                results = results + bcolors.OKGREEN + "." + bcolors.ENDC
+                results = results + Logger.Symbol.OK + "." + Logger.Symbol.ENDC
             else:
-                results = results + bcolors.FAIL + "F" + bcolors.ENDC
+                results = results + Logger.Symbol.FAIL + "F" + Logger.Symbol.ENDC
                 failures.append(test)
         print("{} {}".format(name, results))
+
         return failures
 
     def _parse(self):
