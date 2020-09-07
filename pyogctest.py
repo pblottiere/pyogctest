@@ -24,11 +24,17 @@ if __name__ == "__main__":
         help="URL",
     )
 
-    parser.add_argument("-p", "--port", type=int, help="Binding port", default=8081)
+    parser.add_argument(
+        "-p", "--port", type=int, help="Binding port (default: 8081)", default=8081
+    )
 
     parser.add_argument("-d", "--debug", help="Debug mode", action="store_true")
 
     parser.add_argument("-v", "--verbose", help="Verbose mode", action="store_true")
+
+    parser.add_argument(
+        "-x", "--xml", help="Save Teamengine XML report", action="store_true"
+    )
 
     parser.add_argument(
         "-r", "--regex", help="Regular expression", type=str, default=""
@@ -74,10 +80,10 @@ if __name__ == "__main__":
     t.stop()
     end = datetime.datetime.now()
 
-    # f = open("report.xml", "r")
-    # f.write(xml)
-    # xml = f.read()
-    # f.close()
+    if args.xml:
+        with open("teamengine.xml", "w") as f:
+            f.write(xml)
+            # xml = f.read()
 
     # parse xml report
     Logger.debug("Parse XML report")
