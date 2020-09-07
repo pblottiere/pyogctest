@@ -22,7 +22,7 @@ class Teamengine(object):
         def __str__(self):
             return self.value
 
-    def __init__(self, suite, port=8080):
+    def __init__(self, suite, port):
         self.suite = suite
         self.port = port
 
