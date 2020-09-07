@@ -6,6 +6,13 @@ done by using the REST API provided by
 XML report is parsed and displayed to be humanly readable "à la" `pytest` (as
 much as possible).
 
+`pyogctest` have been developed and tested with [QGIS
+Server](https://docs.qgis.org/3.10/en/docs/server_manual/index.html) thanks to
+[QGIS.org](https://www.qgis.org/en/site/). However, there's nothing specific to
+QGIS Server itself, so it should work with other map servers too (while not
+tested).
+
+
 ### Install
 
 To install Python dependencies:
