@@ -42,7 +42,7 @@ used for official certifications).
 
 To run the WMS 1.3.0 test suites:
 
-```` bash
+````
 $ ./pyogctest.py -s wms130 http://qgis4.qgis.org:8080/certification_qgisserver_master
 ======================================== OGC test session starts =========================================
 testsuite: WMS 1.3.0
@@ -57,9 +57,11 @@ queryable .........
 ======================================== 183 passed in 69 seconds ========================================
 ````
 
+#### Verbose
+
 If you want more details about tests, you can use the `-v` option:
 
-```` bash
+````
 $ ./pyogctest.py -s wms130 -v http://qgis4.qgis.org:8080/certification_qgisserver_master
 ======================================== OGC test session starts =========================================
 testsuite: WMS 1.3.0
@@ -70,4 +72,63 @@ data-independent::basic_elements::param-rules::extra-GetFeatureInfo-param PASSED
 data-independent::basic_elements::param-rules::extra-GetCapabilities-param PASSED
 data-independent::basic_elements::version-negotiation::negotiate-no-version PASSED
 ...
+````
+
+#### HTML report
+
+By default the output format is 'prompt' but you can also the the `-f html`
+option to generate a HTML report. In this case, you can control the next
+parameters:
+
+- `-o` for the output directory with a QGIS CSS theme file
+- `-b` for the branch name to use in the report
+- `-c` for the commit number to use in the report
+
+
+#### Docker binding port
+
+The default binding port for the Docker container is `8081` but you may have an
+error if this port is already in use on your system:
+
+````
+$ ./pyogctest.py -s wms130 http://qgis4.qgis.org:8080/certification_qgisserver_master
+docker.errors.APIError: 500 Server Error: Internal Server Error ("driver failed programming external connectivity on endpoint pyogctest: Error starting userland proxy: listen tcp 0.0.0.0:8081: bind: address already in use")
+````
+
+In this case you have to use the `-p` option to use another port:
+
+````
+$ ./pyogctest.py -s wms130 -p 8088 http://qgis4.qgis.org:8080/certification_qgisserver_master
+````
+
+
+#### Help
+
+To take a look at all available options, you can use the `-h` parameter:
+
+````
+$ ./pyogctest.py -h
+usage: pyogctest.py [-h] [-p PORT] [-d] [-x] [-f {prompt,html}] [-s {wms130}] [-r REGEX] [-v] [-o OUTPUT] [-c COMMIT] [-b BRANCH] url
+
+positional arguments:
+  url                   URL
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -p PORT, --port PORT  Docker container binding port (default: '8081')
+  -d, --debug           Debug mode
+  -x, --xml             Save Teamengine XML report
+  -f {prompt,html}, --format {prompt,html}
+                        Output format (default: 'prompt')
+  -s {wms130}, --suite {wms130}
+                        Test suite (default: 'wms130')
+  -r REGEX, --regex REGEX
+                        Regular expression. Only the 'prompt' format is affected by this option
+  -v, --verbose         Verbose mode. Only the 'prompt' format is affected by this option
+  -o OUTPUT, --output OUTPUT
+                        Output directory. Only the 'html' format is affected by this option (default: '/home/pblottiere/devel/perso/pyogctest/teamengine')
+  -c COMMIT, --commit COMMIT
+                        QGIS commit number. Only the 'html' format is affected by this option (default: None)
+  -b BRANCH, --branch BRANCH
+                        QGIS branch name. Only the 'html' format is affected by this option (default: 'master')
 ````
