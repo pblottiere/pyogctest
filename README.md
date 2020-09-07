@@ -61,6 +61,34 @@ queryable .........
 ======================================== 183 passed in 69 seconds ========================================
 ````
 
+In case of failure, a descriptive message is displayed for all failing tests:
+
+````
+$ ./pyogctest.py -s wms130 http://qgis4.qgis.org:8080/certification_qgisserver_master
+======================================== OGC test session starts =========================================
+testsuite: WMS 1.3.0
+collected 170 items
+
+data-independent ...................................F..................................................................................................................
+data-preconditions .
+basic ......
+recommendations .........
+queryable .........
+
+================================================ FAILURES ================================================
+___________________ data-independent::getcapabilities::layer-properties::metadataurls ____________________
+
+Assertion: For each of the MetadataURL elements in the capabilities document, the MIME-type returned by the resource is the same as the Format element.
+
+Error: Error in call to extension function {public org.w3c.dom.NodeList com.occamlab.te.TECore.request(org.w3c.dom.Document,java.lang.String) throws java.lang.Throwable}: Exception in extension function java.lang.RuntimeException: Parser {http://www.occamlab.com/te/parsers}HTTPParser threw an exception.
+
+URL: http://nginx/wms13/metadata/Streams.xml
+
+Method: get
+
+=================================== 169 passed, 1 failed in 56 seconds ===================================
+````
+
 
 #### Verbose
 
