@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 from pyogctest.logger import Logger
 from pyogctest.report.format import Format
 
+
 class Test(object):
     def __init__(self):
         self.name = ""

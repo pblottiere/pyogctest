@@ -25,9 +25,18 @@ if __name__ == "__main__":
 
     parser.add_argument("-v", "--verbose", help="Verbose mode", action="store_true")
 
-    parser.add_argument("-r", "--regex", help="Regular expression", type=str, default="")
+    parser.add_argument(
+        "-r", "--regex", help="Regular expression", type=str, default=""
+    )
 
-    parser.add_argument("-f", "--format", help="Output format (default: prompt)", type=Format, choices=list(Format), default=Format.PROMPT)
+    parser.add_argument(
+        "-f",
+        "--format",
+        help="Output format (default: prompt)",
+        type=Format,
+        choices=list(Format),
+        default=Format.PROMPT,
+    )
 
     parser.add_argument(
         "-s",
