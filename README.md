@@ -8,7 +8,7 @@ much as possible).
 
 ### Install
 
-To install and use `pyogctest`:
+To install Python dependencies:
 
 ```` python
 $ git clone https://github.com/pblottiere/pyogctest
@@ -17,3 +17,7 @@ $ virtualenv venv
 $ source venv/bin/activate
 (venv) $ pip install -e .
 ````
+
+Moreover, `docker` is also necessary to run `pyogctests`. Indeed, Teamengine is
+used through Docker images provided on
+[Dockerhub](https://hub.docker.com/u/ogccite).
