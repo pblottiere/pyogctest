@@ -30,14 +30,59 @@ class ParserWMS130(object):
         self.xml = xml
         self.duration = duration
 
-    def dump(self, verbose, regex, format, outdir, commit, branch):
-        if format == Format.PROMPT:
-            self._parse()
-            self._dump_prompt(verbose, regex)
-        elif format == Format.HTML:
-            self._dump_html(outdir, commit, branch)
+    def dump_html(self, outdir, commit, branch):
+        out = None
+        err = None
+        moddir = os.path.dirname(os.path.realpath(__file__))
 
-    def _dump_prompt(self, verbose, regex):
+        with tempfile.NamedTemporaryFile() as f:
+            f.write(self.xml.encode())
+
+            xsl = os.path.join(moddir, "tohtml.xsl")
+            cmd = ["xmlstarlet", "tr", xsl, f.name]
+            p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = p.communicate()
+            out = out.decode("utf-8")
+
+        report_out = ""
+
+        for line in out.splitlines(keepends=True):
+            # clear line
+            line = line.replace("&quot;", '"')
+            line = line.replace("&amp;", "&")
+
+            # date
+            date_tag = "{{TEMPLATE_DATE}}"
+            if date_tag in line:
+                format = "%Y-%m-%d %H:%M:%S"
+                date = datetime.datetime.now().strftime(format)
+                line = date
+
+            # version
+            version_tag = "{{TEMPLATE_VERSION}}"
+            if version_tag in line:
+                line = line.replace(version_tag, branch)
+
+            # commit
+            commit_tag = "{{TEMPLATE_COMMIT}}"
+            if commit_tag in line:
+                commit_link = "https://github.com/qgis/QGIS/commit/{}".format(commit)
+                commit_link_tag = "%7BTEMPLATE_COMMIT_LINK%7D"
+                line = line.replace(commit_link_tag, commit_link)
+                line = line.replace(commit_tag, commit)
+
+            report_out += line
+
+        os.makedirs(outdir)
+        f = open(os.path.join(outdir, "teamengine.html"), "w")
+        f.write(report_out)
+        f.close()
+
+        style = os.path.join(moddir, "style.css")
+        shutil.copy(style, outdir)
+
+    def dump_prompt(self, verbose, regex):
+        self._parse()
         Logger.log("collected {} items".format(len(self.tree)), bold=True)
         Logger.log("")
 
@@ -260,54 +305,3 @@ class ParserWMS130(object):
                 t.exception = child.text.replace("Error: ", "")
 
         return t
-
-    def _dump_html(self, outdir, commit, branch):
-        out = None
-        err = None
-        moddir = os.path.dirname(os.path.realpath(__file__))
-
-        with tempfile.NamedTemporaryFile() as f:
-            f.write(self.xml.encode())
-
-            xsl = os.path.join(moddir, "tohtml.xsl")
-            cmd = ["xmlstarlet", "tr", xsl, f.name]
-            p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            out, err = p.communicate()
-            out = out.decode("utf-8")
-
-        report_out = ""
-
-        for line in out.splitlines(keepends=True):
-            # clear line
-            line = line.replace("&quot;", '"')
-            line = line.replace("&amp;", "&")
-
-            # date
-            date_tag = "{{TEMPLATE_DATE}}"
-            if date_tag in line:
-                format = "%Y-%m-%d %H:%M:%S"
-                date = datetime.datetime.now().strftime(format)
-                line = date
-
-            # version
-            version_tag = '{{TEMPLATE_VERSION}}'
-            if version_tag in line:
-                line = line.replace(version_tag, branch)
-
-            # commit
-            commit_tag = '{{TEMPLATE_COMMIT}}'
-            if commit_tag in line:
-                commit_link = 'https://github.com/qgis/QGIS/commit/{}'.format(commit)
-                commit_link_tag = '%7BTEMPLATE_COMMIT_LINK%7D'
-                line = line.replace(commit_link_tag, commit_link)
-                line = line.replace(commit_tag, commit)
-
-            report_out += line
-
-        os.makedirs(outdir)
-        f = open(os.path.join(outdir, "teamengine.html"), "w")
-        f.write(report_out)
-        f.close()
-
-        style = os.path.join(moddir, "style.css")
-        shutil.copy(style, outdir)

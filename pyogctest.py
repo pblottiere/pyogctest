@@ -112,25 +112,31 @@ if __name__ == "__main__":
 
     # run OGC tests with Teamengine
     start = datetime.datetime.now()
-    # t = Teamengine(args.suite, args.port)
+    t = Teamengine(args.suite, args.port)
 
     Logger.debug("Pull docker image")
-    # t.pull()
+    t.pull()
 
     Logger.debug("Start container")
-    # t.start()
+    t.start()
 
     Logger.debug("Run OGC tests")
-    # xml = t.run(args.url)
-    # t.stop()
+    xml = t.run(args.url)
+    t.stop()
     end = datetime.datetime.now()
 
     if args.xml:
-        with open("teamengine.xml", "r") as f:
-            # f.write(xml)
-            xml = f.read()
+        with open("teamengine.xml", "w") as f:
+            f.write(xml)
+            # xml = f.read()
 
     # parse xml report
     Logger.debug("Parse XML report")
     r = Report(args.suite, xml, (end - start).seconds)
-    r.dump(args.verbose, args.regex, args.format, args.output, args.commit, args.branch)
+
+    if args.format == Format.PROMPT:
+        r.dump_prompt(args.verbose, args.regex)
+    elif args.format == Format.HTML:
+        r.dump_html(args.output, args.commit, args.branch)
+        Logger.log("")
+        Logger.log("HTML report saved in {}".format(args.output))

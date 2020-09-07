@@ -16,5 +16,8 @@ class Report(object):
         if suite == Teamengine.TestSuite.WMS130:
             self.parser = ParserWMS130(xml, duration)
 
-    def dump(self, verbose, regex, format, outdir, commit, branch):
-        self.parser.dump(verbose, regex, format, outdir, commit, branch)
+    def dump_prompt(self, verbose, regex):
+        self.parser.dump_prompt(verbose, regex)
+
+    def dump_html(self, outdir, commit, branch):
+        self.parser.dump_html(outdir, commit, branch)
