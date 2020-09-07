@@ -12,6 +12,10 @@ Server](https://docs.qgis.org/3.10/en/docs/server_manual/index.html) thanks to
 QGIS Server itself (excepted for the HTML report CSS theme), so it should work
 with other map servers too (while not tested).
 
+For now, only the next test suites are supported:
+
+- [WMS 1.3.0](http://cite.opengeospatial.org/teamengine/about/wms/1.3.0/site/wms-1_3_0-ats.html)
+
 
 ## Install
 
