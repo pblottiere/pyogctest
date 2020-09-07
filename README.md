@@ -61,9 +61,11 @@ queryable .........
 ======================================== 183 passed in 69 seconds ========================================
 ````
 
+
 #### Verbose
 
-If you want more details about tests, you can use the `-v` option:
+If you want more details about tests, you can use the `-v` option when the
+format is `prompt:
 
 ````
 $ ./pyogctest.py -s wms130 -v http://qgis4.qgis.org:8080/certification_qgisserver_master
@@ -77,6 +79,29 @@ data-independent::basic_elements::param-rules::extra-GetCapabilities-param PASSE
 data-independent::basic_elements::version-negotiation::negotiate-no-version PASSED
 ...
 ````
+
+
+#### Regex
+
+We cannot control tests which are genuinely executed by Teamengine, but we can
+filter the report. A `-r` option is available when the `prompt` format is
+activated. It's not a "real" regular expression parameter, only a simple
+pattern matching:
+
+````
+$ ./pyogctest.py -r transparent -s wms130 -v http://qgis4.qgis.org:8080/certification_qgisserver_master
+======================================== OGC test session starts =========================================
+testsuite: WMS 1.3.0
+collected 183 items
+
+data-independent::getmap::transparent::transparent-false PASSED
+data-independent::getmap::transparent::transparent-default PASSED
+data-independent::getmap::transparent::transparent-opaque-layer PASSED
+basic::getmap::transparent::transparent-true PASSED
+
+======================================== 183 passed in 74 seconds ========================================
+````
+
 
 #### HTML report
 
