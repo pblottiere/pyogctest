@@ -7,7 +7,7 @@ __copyright__ = "Copyright 2020, Paul Blottiere"
 from enum import Enum
 
 from pyogctest.teamengine import Teamengine
-from pyogctest.report.wms130 import ParserWMS130
+from pyogctest.report.wms130.wms130 import ParserWMS130
 
 
 class Report(object):
@@ -16,5 +16,5 @@ class Report(object):
         if suite == Teamengine.TestSuite.WMS130:
             self.parser = ParserWMS130(xml, duration)
 
-    def dump(self, verbose, regex, format):
-        self.parser.dump(verbose, regex, format)
+    def dump(self, verbose, regex, format, outdir, commit, branch):
+        self.parser.dump(verbose, regex, format, outdir, commit, branch)

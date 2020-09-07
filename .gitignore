@@ -2,3 +2,5 @@ venv
 pyogctest.egg-info/
 __pycache__
 *.xml
+*.html
+teamengine/

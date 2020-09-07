@@ -9,8 +9,8 @@ much as possible).
 `pyogctest` have been developed and tested with [QGIS
 Server](https://docs.qgis.org/3.10/en/docs/server_manual/index.html) thanks to
 [QGIS.org](https://www.qgis.org/en/site/). However, there's nothing specific to
-QGIS Server itself, so it should work with other map servers too (while not
-tested).
+QGIS Server itself (excepted for the HTML report CSS theme), so it should work
+with other map servers too (while not tested).
 
 
 ### Install
@@ -25,6 +25,9 @@ $ source venv/bin/activate
 (venv) $ pip install -e .
 ````
 
-Moreover, `docker` is also necessary to run `pyogctests`. Indeed, Teamengine is
-used through Docker images provided on
-[Dockerhub](https://hub.docker.com/u/ogccite).
+Some system dependencies are also necessary:
+
+- `docker` because Teamengine is used through Docker images provided on
+  [Dockerhub](https://hub.docker.com/u/ogccite).
+- `xmlstarlet` to convert a XML document into a HTML report (useful when the
+  `html` format option is activated)
