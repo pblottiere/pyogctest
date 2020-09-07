@@ -21,7 +21,7 @@ For now, only the next test suites are supported:
 
 To install Python dependencies:
 
-```` python
+```` bash
 $ git clone https://github.com/pblottiere/pyogctest
 $ cd pyogctest
 $ virtualenv venv
@@ -46,7 +46,7 @@ used for official certifications).
 
 To run the WMS 1.3.0 test suites:
 
-````
+```` bash
 $ ./pyogctest.py -s wms130 http://qgis4.qgis.org:8080/certification_qgisserver_master
 ======================================== OGC test session starts =========================================
 testsuite: WMS 1.3.0
@@ -63,7 +63,7 @@ queryable .........
 
 In case of failure, a descriptive message is displayed for all failing tests:
 
-````
+```` bash
 $ ./pyogctest.py -s wms130 http://qgis4.qgis.org:8080/certification_qgisserver_master
 ======================================== OGC test session starts =========================================
 testsuite: WMS 1.3.0
@@ -95,7 +95,7 @@ Method: get
 If you want more details about tests, you can use the `-v` option when the
 format is `prompt:
 
-````
+```` bash
 $ ./pyogctest.py -s wms130 -v http://qgis4.qgis.org:8080/certification_qgisserver_master
 ======================================== OGC test session starts =========================================
 testsuite: WMS 1.3.0
@@ -116,7 +116,7 @@ filter the report. A `-r` option is available when the `prompt` format is
 activated. It's not a "real" regular expression parameter, only a simple
 pattern matching:
 
-````
+```` bash
 $ ./pyogctest.py -r transparent -s wms130 -v http://qgis4.qgis.org:8080/certification_qgisserver_master
 ======================================== OGC test session starts =========================================
 testsuite: WMS 1.3.0
@@ -147,7 +147,7 @@ parameters:
 The default binding port for the Docker container is `8081` but you may have an
 error if this port is already in use on your system:
 
-````
+```` bash
 $ ./pyogctest.py -s wms130 http://qgis4.qgis.org:8080/certification_qgisserver_master
 docker.errors.APIError: 500 Server Error: Internal Server Error ("driver failed programming external connectivity on endpoint pyogctest: Error starting userland proxy: listen tcp 0.0.0.0:8081: bind: address already in use")
 ````
@@ -163,7 +163,7 @@ $ ./pyogctest.py -s wms130 -p 8088 http://qgis4.qgis.org:8080/certification_qgis
 
 To take a look at all available options, you can use the `-h` parameter:
 
-````
+```` bash
 $ ./pyogctest.py -h
 usage: pyogctest.py [-h] [-p PORT] [-d] [-x] [-f {prompt,html}] [-s {wms130}] [-r REGEX] [-v] [-o OUTPUT] [-c COMMIT] [-b BRANCH] url
 
