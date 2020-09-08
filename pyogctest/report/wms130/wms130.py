@@ -29,6 +29,7 @@ class ParserWMS130(object):
     def __init__(self, xml, duration):
         self.xml = xml
         self.duration = duration
+        self.error = 0
 
     def dump_html(self, outdir, commit, branch):
         out = None
@@ -220,6 +221,7 @@ class ParserWMS130(object):
             msg = " {} passed, {} failed in {} seconds ".format(
                 len(successes), len(failures), self.duration
             )
+            self.error = 1
             Logger.log(msg, color=Logger.Symbol.WARNING, center=True, symbol="=")
 
     def _parse(self):

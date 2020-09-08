@@ -6,6 +6,7 @@ __contact__ = "blottiere.paul@gmail.com"
 __copyright__ = "Copyright 2020, Paul Blottiere"
 
 import os
+import sys
 import datetime
 import argparse
 
@@ -140,3 +141,5 @@ if __name__ == "__main__":
         r.dump_html(args.output, args.commit, args.branch)
         Logger.log("")
         Logger.log("HTML report saved in {}".format(args.output))
+
+    sys.exit(r.parser.error)
