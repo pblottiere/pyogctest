@@ -26,7 +26,10 @@ class Logger(object):
 
     @staticmethod
     def log(text, color=None, bold=False, center=False, symbol=""):
-        rows, columns = os.popen("stty size", "r").read().split()
+        columns = 80
+        s = os.popen("stty size", "r").read()
+        if s:
+            rows, columns = s.split()
 
         if center:
             width = ":{}^{}".format(symbol, columns)
