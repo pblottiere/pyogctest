@@ -93,7 +93,7 @@ Method: get
 #### Verbose
 
 If you want more details about tests, you can use the `-v` option when the
-format is `prompt:
+format is `prompt`:
 
 ```` bash
 $ ./pyogctest.py -s wms130 -v http://qgis4.qgis.org:8080/certification_qgisserver_master
@@ -133,7 +133,7 @@ basic::getmap::transparent::transparent-true PASSED
 
 #### HTML report
 
-By default the output format is 'prompt' but you can also the the `-f html`
+By default the output format is `prompt` but you can also the the `-f html`
 option to generate a HTML report. In this case, you can control the next
 parameters:
 
