@@ -5,6 +5,7 @@ __contact__ = "blottiere.paul@gmail.com"
 __copyright__ = "Copyright 2020, Paul Blottiere"
 
 import os
+import shutil
 import zipfile
 import requests
 
@@ -21,22 +22,23 @@ class Data(object):
     def __init__(self, suite):
         self.suite = suite
 
-    def project(self):
-        dirname = os.path.dirname(os.path.realpath(__file__))
-
-        if self.suite == Teamengine.TestSuite.WMS130:
-            return os.path.join(dirname, PROJECT_WMS130)
-
     def download(self):
         if self.suite == Teamengine.TestSuite.WMS130:
             request = os.path.join(WMS130_URL, WMS130_ZIP)
             r = requests.get(request)
+
             open(WMS130_ZIP, 'wb').write(r.content)
 
             with zipfile.ZipFile(WMS130_ZIP, 'r') as zip_ref:
                 zip_ref.extractall("data")
 
+            os.remove(WMS130_ZIP)
+
+            dirname = os.path.dirname(os.path.realpath(__file__))
+            src = os.path.join(dirname, WMS130_PROJECT)
+            dst = os.path.join("data", WMS130_PROJECT)
+            shutil.copyfile(src, dst)
+
     @staticmethod
     def exists():
         return os.path.exists("data")
-

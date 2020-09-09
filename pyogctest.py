@@ -11,6 +11,7 @@ import datetime
 import argparse
 
 from pyogctest.logger import Logger
+from pyogctest.data.data import Data
 from pyogctest.report.format import Format
 from pyogctest.report.report import Report
 from pyogctest.teamengine import Teamengine
@@ -21,7 +22,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "url",
+        "-u",
+        "--url",
         type=str,
         help="URL",
     )
@@ -35,6 +37,8 @@ if __name__ == "__main__":
     )
 
     parser.add_argument("-d", "--debug", help="Debug mode", action="store_true")
+
+    parser.add_argument("-w", "--download", help="Download data", action="store_true")
 
     parser.add_argument(
         "-x", "--xml", help="Save Teamengine XML report", action="store_true"
@@ -106,6 +110,16 @@ if __name__ == "__main__":
 
     # init logging
     Logger.init(args.debug)
+
+    # Download data
+    if args.download:
+        Logger.debug("Download data")
+        data = Data(args.suite)
+        if not data.exists():
+            data.download()
+        sys.exit()
+
+    # start session
     Logger.log(" OGC test session starts ", center=True, symbol="=")
 
     if args.suite == Teamengine.TestSuite.WMS130:
