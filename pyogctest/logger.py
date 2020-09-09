@@ -7,6 +7,7 @@ __copyright__ = "Copyright 2020, Paul Blottiere"
 import os
 import logging
 import coloredlogs
+from shutil import get_terminal_size
 
 
 class Logger(object):
@@ -26,10 +27,7 @@ class Logger(object):
 
     @staticmethod
     def log(text, color=None, bold=False, center=False, symbol=""):
-        columns = 80
-        s = os.popen("stty size", "r").read()
-        if s:
-            rows, columns = s.split()
+        columns, _ = get_terminal_size()
 
         if center:
             width = ":{}^{}".format(symbol, columns)
