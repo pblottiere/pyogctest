@@ -47,7 +47,7 @@ used for official certifications).
 To run the WMS 1.3.0 test suites:
 
 ```` bash
-$ ./pyogctest.py -s wms130 http://qgis4.qgis.org:8080/certification_qgisserver_master
+$ ./pyogctest.py -s wms130 -u http://qgis4.qgis.org:8080/certification_qgisserver_master
 ======================================== OGC test session starts =========================================
 testsuite: WMS 1.3.0
 collected 183 items
@@ -64,7 +64,7 @@ queryable .........
 In case of failure, a descriptive message is displayed for all failing tests:
 
 ```` bash
-$ ./pyogctest.py -s wms130 http://qgis4.qgis.org:8080/certification_qgisserver_master
+$ ./pyogctest.py -s wms130 -u http://qgis4.qgis.org:8080/certification_qgisserver_master
 ======================================== OGC test session starts =========================================
 testsuite: WMS 1.3.0
 collected 170 items
@@ -96,7 +96,7 @@ If you want more details about tests, you can use the `-v` option when the
 format is `prompt`:
 
 ```` bash
-$ ./pyogctest.py -s wms130 -v http://qgis4.qgis.org:8080/certification_qgisserver_master
+$ ./pyogctest.py -s wms130 -v -u http://qgis4.qgis.org:8080/certification_qgisserver_master
 ======================================== OGC test session starts =========================================
 testsuite: WMS 1.3.0
 collected 183 items
@@ -117,7 +117,7 @@ activated. It's not a "real" regular expression parameter, only a simple
 pattern matching:
 
 ```` bash
-$ ./pyogctest.py -r transparent -s wms130 -v http://qgis4.qgis.org:8080/certification_qgisserver_master
+$ ./pyogctest.py -r transparent -s wms130 -v -u http://qgis4.qgis.org:8080/certification_qgisserver_master
 ======================================== OGC test session starts =========================================
 testsuite: WMS 1.3.0
 collected 183 items
@@ -155,7 +155,7 @@ docker.errors.APIError: 500 Server Error: Internal Server Error ("driver failed 
 In this case you have to use the `-p` option to use another port:
 
 ````
-$ ./pyogctest.py -s wms130 -p 8088 http://qgis4.qgis.org:8080/certification_qgisserver_master
+$ ./pyogctest.py -s wms130 -p 8088 -u http://qgis4.qgis.org:8080/certification_qgisserver_master
 ````
 
 
@@ -164,16 +164,17 @@ $ ./pyogctest.py -s wms130 -p 8088 http://qgis4.qgis.org:8080/certification_qgis
 To take a look at all available options, you can use the `-h` parameter:
 
 ```` bash
-$ ./pyogctest.py -h
-usage: pyogctest.py [-h] [-p PORT] [-d] [-x] [-f {prompt,html}] [-s {wms130}] [-r REGEX] [-v] [-o OUTPUT] [-c COMMIT] [-b BRANCH] url
-
-positional arguments:
-  url                   URL
+$ ./pyogctest.py --help
+usage: pyogctest.py [-h] [-u URL] [-p PORT] [-n NETWORK] [-d] [-w] [-x] [-f {prompt,html}] [-s {wms130}] [-r REGEX] [-v] [-o OUTPUT] [-c COMMIT] [-b BRANCH]
 
 optional arguments:
   -h, --help            show this help message and exit
+  -u URL, --url URL     URL
   -p PORT, --port PORT  Docker container binding port (default: '8081')
+  -n NETWORK, --network NETWORK
+                        Docker network to bind with
   -d, --debug           Debug mode
+  -w, --download        Download data
   -x, --xml             Save Teamengine XML report
   -f {prompt,html}, --format {prompt,html}
                         Output format (default: 'prompt')
