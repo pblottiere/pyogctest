@@ -22,9 +22,10 @@ class Teamengine(object):
         def __str__(self):
             return self.value
 
-    def __init__(self, suite, port):
+    def __init__(self, suite, port, network):
         self.suite = suite
         self.port = port
+        self.network = network
 
         if self.suite == Teamengine.TestSuite.WMS130:
             self.image = OGCCITE_WMS130
@@ -37,9 +38,19 @@ class Teamengine(object):
         self.stop()
 
         client = docker.from_env()
-        client.containers.run(
-            self.image, detach=True, ports={8080: self.port}, name=NAME, remove=True
-        )
+        if self.network:
+            client.containers.run(
+                self.image,
+                detach=True,
+                ports={8080: self.port},
+                name=NAME,
+                remove=True,
+                network=self.network,
+            )
+        else:
+            client.containers.run(
+                self.image, detach=True, ports={8080: self.port}, name=NAME, remove=True
+            )
         time.sleep(5)  # teamengine takes some time to start
 
     def stop(self):

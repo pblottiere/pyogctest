@@ -36,6 +36,14 @@ if __name__ == "__main__":
         default=8081,
     )
 
+    parser.add_argument(
+        "-n",
+        "--network",
+        type=str,
+        help="Docker network to bind with",
+        default="",
+    )
+
     parser.add_argument("-d", "--debug", help="Debug mode", action="store_true")
 
     parser.add_argument("-w", "--download", help="Download data", action="store_true")
@@ -127,7 +135,7 @@ if __name__ == "__main__":
 
     # run OGC tests with Teamengine
     start = datetime.datetime.now()
-    t = Teamengine(args.suite, args.port)
+    t = Teamengine(args.suite, args.port, args.network)
 
     Logger.debug("Pull docker image")
     t.pull()

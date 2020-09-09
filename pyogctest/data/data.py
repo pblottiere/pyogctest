@@ -12,13 +12,12 @@ import requests
 from pyogctest.teamengine import Teamengine
 
 
-WMS130_ZIP="data-wms-1.3.0.zip"
-WMS130_PROJECT="teamengine_wms_130.qgs"
-WMS130_URL="http://cite.opengeospatial.org/teamengine/about/wms/1.3.0/site/"
+WMS130_ZIP = "data-wms-1.3.0.zip"
+WMS130_PROJECT = "teamengine_wms_130.qgs"
+WMS130_URL = "http://cite.opengeospatial.org/teamengine/about/wms/1.3.0/site/"
 
 
 class Data(object):
-
     def __init__(self, suite):
         self.suite = suite
 
@@ -27,9 +26,9 @@ class Data(object):
             request = os.path.join(WMS130_URL, WMS130_ZIP)
             r = requests.get(request)
 
-            open(WMS130_ZIP, 'wb').write(r.content)
+            open(WMS130_ZIP, "wb").write(r.content)
 
-            with zipfile.ZipFile(WMS130_ZIP, 'r') as zip_ref:
+            with zipfile.ZipFile(WMS130_ZIP, "r") as zip_ref:
                 zip_ref.extractall("data")
 
             os.remove(WMS130_ZIP)
