@@ -5,9 +5,11 @@ __contact__ = "blottiere.paul@gmail.com"
 __copyright__ = "Copyright 2020, Paul Blottiere"
 
 import os
+import sys
 import shutil
 import zipfile
 import requests
+import fileinput
 
 from pyogctest.teamengine import Teamengine
 
@@ -37,6 +39,22 @@ class Data(object):
             src = os.path.join(dirname, WMS130_PROJECT)
             dst = os.path.join("data", WMS130_PROJECT)
             shutil.copyfile(src, dst)
+
+    def prepare(self, url):
+        if not Data.exists():
+            return
+
+        dirname = os.path.dirname(os.path.realpath(__file__))
+        src = os.path.join(dirname, WMS130_PROJECT)
+        dst = os.path.join("data", WMS130_PROJECT)
+        shutil.copyfile(src, dst)
+
+        pattern = "http://nginx/wms13"
+        replacement = url
+
+        for line in fileinput.input(dst, inplace=True):
+            line = line.replace(pattern, replacement)
+            sys.stdout.write(line)
 
     @staticmethod
     def exists():

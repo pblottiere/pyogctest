@@ -48,6 +48,8 @@ if __name__ == "__main__":
 
     parser.add_argument("-w", "--download", help="Download data", action="store_true")
 
+    parser.add_argument("-m", "--metadata", help="Set the metadata URL", type=str)
+
     parser.add_argument(
         "-x", "--xml", help="Save Teamengine XML report", action="store_true"
     )
@@ -125,6 +127,14 @@ if __name__ == "__main__":
         data = Data(args.suite)
         if not data.exists():
             data.download()
+        sys.exit()
+
+    # Update metadata
+    if args.metadata:
+        Logger.debug("Update metadata URLs in project")
+        data = Data(args.suite)
+        if data.exists():
+            data.prepare(args.metadata)
         sys.exit()
 
     # start session
