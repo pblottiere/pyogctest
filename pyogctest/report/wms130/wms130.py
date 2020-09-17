@@ -74,13 +74,18 @@ class ParserWMS130(object):
 
             report_out += line
 
-        os.makedirs(outdir)
+        if not os.path.isdir(outdir):
+            os.makedirs(outdir)
+
         f = open(os.path.join(outdir, "teamengine.html"), "w")
         f.write(report_out)
         f.close()
 
         style = os.path.join(moddir, "style.css")
         shutil.copy(style, outdir)
+
+        logo = os.path.join(moddir, "logo.png")
+        shutil.copy(logo, outdir)
 
     def dump_prompt(self, verbose, regex):
         self._parse()
