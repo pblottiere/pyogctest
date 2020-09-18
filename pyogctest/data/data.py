@@ -16,7 +16,7 @@ from pyogctest.teamengine import Teamengine
 
 WMS130_ZIP = "data-wms-1.3.0.zip"
 WMS130_PROJECT = "teamengine_wms_130.qgs"
-WMS130_URL = "http://cite.opengeospatial.org/teamengine/about/wms/1.3.0/site/"
+WMS130_URL = "https://cite.opengeospatial.org/teamengine/about/wms13/1.3.0/site/"
 
 
 class Data(object):
