@@ -26,7 +26,7 @@ class Data(object):
     def download(self):
         if self.suite == Teamengine.TestSuite.WMS130:
             request = os.path.join(WMS130_URL, WMS130_ZIP)
-            r = requests.get(request)
+            r = requests.get(request, verify=False)
 
             open(WMS130_ZIP, "wb").write(r.content)
 
