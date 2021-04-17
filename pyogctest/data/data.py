@@ -30,12 +30,20 @@ class Data(object):
 
             open(WMS130_ZIP, "wb").write(r.content)
 
-            with zipfile.ZipFile(WMS130_ZIP, "r") as zip_ref:
-                zip_ref.extractall("data")
-
+            self.extract(WMS130_ZIP)
             os.remove(WMS130_ZIP)
 
-            dirname = os.path.dirname(os.path.realpath(__file__))
+    def extract(self, zipdata=None):
+
+        dirname = os.path.dirname(os.path.realpath(__file__))
+
+        if self.suite == Teamengine.TestSuite.WMS130:
+            if zipdata is None:
+                zipdata = os.path.join(dirname, WMS130_ZIP)
+
+            with zipfile.ZipFile(zipdata, "r") as zip_ref:
+                zip_ref.extractall("data")
+
             src = os.path.join(dirname, WMS130_PROJECT)
             dst = os.path.join("data", WMS130_PROJECT)
             shutil.copyfile(src, dst)
