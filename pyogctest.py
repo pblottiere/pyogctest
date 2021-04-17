@@ -46,6 +46,8 @@ if __name__ == "__main__":
 
     parser.add_argument("-d", "--debug", help="Debug mode", action="store_true")
 
+    parser.add_argument("-e", "--extract", help="Extract embedded data", action="store_true")
+
     parser.add_argument("-w", "--download", help="Download data", action="store_true")
 
     parser.add_argument("-m", "--metadata", help="Set the metadata URL", type=str)
@@ -127,6 +129,13 @@ if __name__ == "__main__":
         data = Data(args.suite)
         if not data.exists():
             data.download()
+        sys.exit()
+
+    if args.extract:
+        Logger.debug("Extract embedded data")
+        data = Data(args.suite)
+        if not data.exists():
+            data.extract()
         sys.exit()
 
     # Update metadata

@@ -174,6 +174,7 @@ optional arguments:
   -n NETWORK, --network NETWORK
                         Docker network to bind with
   -d, --debug           Debug mode
+  -e, --extract         Extract embedded data
   -w, --download        Download data
   -x, --xml             Save Teamengine XML report
   -f {prompt,html}, --format {prompt,html}
