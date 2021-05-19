@@ -7,6 +7,7 @@ __copyright__ = "Copyright 2020, Paul Blottiere"
 from setuptools import setup
 
 requirements = (
+    'six',
     'docker',
     'requests',
     'coloredlogs'
