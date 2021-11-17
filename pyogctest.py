@@ -46,7 +46,9 @@ if __name__ == "__main__":
 
     parser.add_argument("-d", "--debug", help="Debug mode", action="store_true")
 
-    parser.add_argument("-e", "--extract", help="Extract embedded data", action="store_true")
+    parser.add_argument(
+        "-e", "--extract", help="Extract embedded data", action="store_true"
+    )
 
     parser.add_argument("-w", "--download", help="Download data", action="store_true")
 
