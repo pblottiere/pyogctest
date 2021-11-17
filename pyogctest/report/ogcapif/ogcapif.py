@@ -80,7 +80,7 @@ class ParserOGCAPIF(object):
                     Logger.log("")
 
                 if failure.message:
-                    msg = failure.message.strip().replace('\n', '')
+                    msg = failure.message.strip().replace("\n", "")
                     Logger.log(f"Message: {msg}")
                     Logger.log("")
 
@@ -98,19 +98,19 @@ class ParserOGCAPIF(object):
         root = ET.fromstring(self.xml)
 
         tests = []
-        for test in root.find('suite').find('test'):
+        for test in root.find("suite").find("test"):
             for child in test:
                 exception = ""
                 message = ""
                 for cc in child:
-                    if 'exception' in cc.tag:
-                        exception = cc.attrib['class']
+                    if "exception" in cc.tag:
+                        exception = cc.attrib["class"]
                         for ccc in cc:
-                            if 'message' in ccc.tag:
+                            if "message" in ccc.tag:
                                 message = ccc.text
 
                 t = Test()
-                t.name = '::'.join(test.attrib["name"].split('.')[-2:])
+                t.name = "::".join(test.attrib["name"].split(".")[-2:])
                 t.method = child.attrib["name"]
                 t.result = child.attrib["status"]
                 t.exception = exception

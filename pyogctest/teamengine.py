@@ -84,7 +84,9 @@ class Teamengine(object):
             )
         elif self.suite == Teamengine.TestSuite.OGCAPIF:
             entrypoint = "{}/wfs3".format(url)
-            teamengine = "http://localhost:{}/teamengine/rest/suites/ogcapi-features-1.0/run".format(self.port)
+            teamengine = "http://localhost:{}/teamengine/rest/suites/ogcapi-features-1.0/run".format(
+                self.port
+            )
 
             request = "{0}?iut={1}".format(teamengine, entrypoint)
 
