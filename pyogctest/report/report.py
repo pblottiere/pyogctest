@@ -8,6 +8,7 @@ from enum import Enum
 
 from pyogctest.teamengine import Teamengine
 from pyogctest.report.wms130.wms130 import ParserWMS130
+from pyogctest.report.ogcapif.ogcapif import ParserOGCAPIF
 
 
 class Report(object):
@@ -15,6 +16,8 @@ class Report(object):
         self.parser = None
         if suite == Teamengine.TestSuite.WMS130:
             self.parser = ParserWMS130(xml, duration)
+        elif suite == Teamengine.TestSuite.OGCAPIF:
+            self.parser = ParserOGCAPIF(xml, duration)
 
     def dump_prompt(self, verbose, regex):
         self.parser.dump_prompt(verbose, regex)
