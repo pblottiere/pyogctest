@@ -12,12 +12,14 @@ from enum import Enum
 
 NAME = "pyogctest"
 OGCCITE_WMS130 = "ogccite/ets-wms13"
+OGCCITE_OGCAPIF = "ogccite/ets-ogcapi-features10"
 
 
 class Teamengine(object):
     class TestSuite(Enum):
 
         WMS130 = "wms130"
+        OGCAPIF = "ogcapif"
 
         def __str__(self):
             return self.value
@@ -29,6 +31,8 @@ class Teamengine(object):
 
         if self.suite == Teamengine.TestSuite.WMS130:
             self.image = OGCCITE_WMS130
+        elif self.suite == Teamengine.TestSuite.OGCAPIF:
+            self.image = OGCCITE_OGCAPIF
 
     def pull(self):
         client = docker.from_env()
@@ -78,6 +82,11 @@ class Teamengine(object):
                 "{0}?queryable=queryable&basic=basic&recommended=recommended&"
                 "capabilities-url={1}".format(teamengine, getcapa)
             )
+        elif self.suite == Teamengine.TestSuite.OGCAPIF:
+            entrypoint = "{}/wfs3".format(url)
+            teamengine = "http://localhost:{}/teamengine/rest/suites/ogcapi-features-1.0/run".format(self.port)
+
+            request = "{0}?iut={1}".format(teamengine, entrypoint)
 
         if request:
             r = requests.get(request, headers={"Accept": "application/xml"})
