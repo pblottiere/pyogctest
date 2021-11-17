@@ -15,6 +15,7 @@ with other map servers too (while not tested).
 For now, only the next test suites are supported:
 
 - [WMS 1.3.0](http://cite.opengeospatial.org/teamengine/about/wms/1.3.0/site/wms-1_3_0-ats.html)
+- [OGC API FEATURE 1.0](https://www.ogc.org/standards/ogcapi-features)
 
 
 ## Install
@@ -179,7 +180,7 @@ optional arguments:
   -x, --xml             Save Teamengine XML report
   -f {prompt,html}, --format {prompt,html}
                         Output format (default: 'prompt')
-  -s {wms130}, --suite {wms130}
+  -s {wms130}, --suite {wms130,ogcapif}
                         Test suite (default: 'wms130')
   -r REGEX, --regex REGEX
                         Regular expression. Only the 'prompt' format is affected by this option
