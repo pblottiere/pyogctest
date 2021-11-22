@@ -14,6 +14,9 @@ import xml.etree.ElementTree as ET
 from pyogctest.logger import Logger
 from pyogctest.report.format import Format
 
+COLOR_PASSED="#006600"
+COLOR_FAILED="#e60000"
+
 
 class Test(object):
     def __init__(self):
@@ -23,12 +26,139 @@ class Test(object):
         self.exception = ""
         self.method = ""
 
+    def toc(self):
+        href = ('<a href="#{}">{}</a><b style="font-family: Verdana, '
+                'sans-serif; color: {};"> {}</b>'
+               ).format(self.name, self.name, self.color, self.status)
+
+        toc = ('<ul>\n'
+           '  <li>\n'
+           '    {0}\n'
+           '  </li>\n'
+           '</ul>').format(href)
+
+        return toc
+
+    @property
+    def color(self):
+        color = COLOR_FAILED
+        if self.status == "Passed":
+            color = COLOR_PASSED
+        return color
+
+    @property
+    def status(self):
+        status = "Failed"
+        if self.result == "PASS":
+            status = "Passed"
+        return status
+
+
+class Toc(object):
+    def __init__(self, tests):
+        self.tests = tests
+
+    def toc(self):
+        toc = ''
+
+        classes = {}
+        for test in self.tests:
+            if test.classe not in classes:
+                classes[test.classe] = True
+
+            if test.result == "PASS":
+                classes[test.classe] &= True
+            else:
+                classes[test.classe] = False
+
+        for classe in classes:
+            status = "Failed"
+            color = COLOR_FAILED
+
+            if classes[classe]:
+                status = "Passed"
+                color = COLOR_PASSED
+
+            href = ('<a href="#{}">{}</a><b style="font-family: Verdana, '
+            'sans-serif; color: {};"> {}</b>'
+           ).format(classe, classe, color, status)
+
+            t = ''
+            for test in self.tests:
+                if test.classe != classe:
+                    continue
+
+                t += test.toc()
+
+            toc += ('<ul>\n'
+           '  <li>\n'
+           '    {0}\n'
+           '    {1}\n'
+           '  </li>\n'
+           '</ul>').format(href, t)
+
+        return toc
+
 
 class ParserOGCAPIF(object):
     def __init__(self, xml, duration):
         self.xml = xml
         self.duration = duration
         self.error = 0
+
+    def dump_html(self, outdir, commit, branch):
+        tests = self._parse()
+        toc = Toc(tests)
+
+        # generate html
+        outpath = os.path.join(outdir, 'pyogctest_ogcapif.html')
+
+        moddir = os.path.dirname(os.path.realpath(__file__))
+        template = os.path.join(moddir, 'template.html')
+        with open(template, 'r') as infile:
+            with open(outpath, 'w') as outfile:
+                for line in infile:
+                    # date
+                    date_tag = '{{TEMPLATE_DATE}}'
+                    if date_tag in line:
+                        format = '%Y-%m-%d %H:%M:%S'
+                        date = datetime.datetime.now().strftime(format)
+                        line = date
+
+                    # # overall result
+                    # color_tag = '{{TEMPLATE_RESULT_COLOR}}'
+                    # status_tag = '{{TEMPLATE_RESULT_STATUS}}'
+                    # if color_tag in line:
+                    #     line = line.replace(color_tag, toc.color())
+                    #     line = line.replace(status_tag, toc.status())
+
+                    # version
+                    version_tag = '{{TEMPLATE_VERSION}}'
+                    if version_tag in line:
+                        line = line.replace(version_tag, branch)
+
+                    # commit
+                    commit_tag = '{{TEMPLATE_COMMIT}}'
+                    if commit_tag in line:
+                        line = line.replace(commit_tag, commit)
+
+                    # toc
+                    toc_tag = '{{TEMPLATE_TOC}}'
+                    if toc_tag in line:
+                        line = toc.toc()
+
+                    # # body
+                    # body_tag = '{{TEMPLATE_BODY}}'
+                    # if body_tag in line:
+                    #     line = body.body()
+
+                    outfile.write(line)
+
+        style = os.path.join(moddir, "style.css")
+        shutil.copy(style, outdir)
+
+        logo = os.path.join(moddir, "logo.png")
+        shutil.copy(logo, outdir)
 
     def dump_prompt(self, verbose, regex):
         tests = self._parse()
@@ -95,6 +225,7 @@ class ParserOGCAPIF(object):
             Logger.log(msg, color=Logger.Symbol.WARNING, center=True, symbol="=")
 
     def _parse(self):
+        print(self.xml)
         root = ET.fromstring(self.xml)
 
         tests = []
@@ -110,11 +241,14 @@ class ParserOGCAPIF(object):
                                 message = ccc.text
 
                 t = Test()
+                t.classe = test.attrib["name"].split(".")[-1]
                 t.name = "::".join(test.attrib["name"].split(".")[-2:])
                 t.method = child.attrib["name"]
                 t.result = child.attrib["status"]
                 t.exception = exception
                 t.message = message
                 tests.append(t)
+
+                print(t.classe)
 
         return tests
