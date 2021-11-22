@@ -79,6 +79,20 @@ class Html(object):
     def __init__(self, tests):
         self.tests = tests
 
+    @property
+    def color(self):
+        for test in self.tests:
+            if test.result != "PASS":
+                return COLOR_FAILED
+        return COLOR_PASSED
+
+    @property
+    def status(self):
+        for test in self.tests:
+            if test.result != "PASS":
+                return "Failed"
+        return "Passed"
+
     def toc(self):
         toc = ''
 
@@ -196,12 +210,12 @@ class ParserOGCAPIF(object):
                         date = datetime.datetime.now().strftime(format)
                         line = date
 
-                    # # overall result
-                    # color_tag = '{{TEMPLATE_RESULT_COLOR}}'
-                    # status_tag = '{{TEMPLATE_RESULT_STATUS}}'
-                    # if color_tag in line:
-                    #     line = line.replace(color_tag, toc.color())
-                    #     line = line.replace(status_tag, toc.status())
+                    # overall result
+                    color_tag = '{{TEMPLATE_RESULT_COLOR}}'
+                    status_tag = '{{TEMPLATE_RESULT_STATUS}}'
+                    if color_tag in line:
+                        line = line.replace(color_tag, html.color)
+                        line = line.replace(status_tag, html.status)
 
                     # version
                     version_tag = '{{TEMPLATE_VERSION}}'
@@ -296,7 +310,6 @@ class ParserOGCAPIF(object):
             Logger.log(msg, color=Logger.Symbol.WARNING, center=True, symbol="=")
 
     def _parse(self):
-        print(self.xml)
         root = ET.fromstring(self.xml)
 
         tests = []
@@ -319,7 +332,5 @@ class ParserOGCAPIF(object):
                 t.exception = exception
                 t.message = message
                 tests.append(t)
-
-                print(t.classe)
 
         return tests
