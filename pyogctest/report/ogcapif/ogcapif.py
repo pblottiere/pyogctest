@@ -29,7 +29,7 @@ class Test(object):
     def toc(self):
         href = ('<a href="#{}">{}</a><b style="font-family: Verdana, '
                 'sans-serif; color: {};"> {}</b>'
-               ).format(self.name, self.name, self.color, self.status)
+               ).format(self.method, self.method, self.color, self.status)
 
         toc = ('<ul>\n'
            '  <li>\n'
@@ -54,7 +54,7 @@ class Test(object):
         return status
 
 
-class Toc(object):
+class Html(object):
     def __init__(self, tests):
         self.tests = tests
 
@@ -65,6 +65,7 @@ class Toc(object):
         for test in self.tests:
             if test.classe not in classes:
                 classes[test.classe] = True
+                continue
 
             if test.result == "PASS":
                 classes[test.classe] &= True
@@ -99,6 +100,51 @@ class Toc(object):
 
         return toc
 
+    def body(self):
+        classes = {}
+        for test in self.tests:
+            if test.classe not in classes:
+                classes[test.classe] = True
+                continue
+
+            if test.result == "PASS":
+                classes[test.classe] &= True
+            else:
+                classes[test.classe] = False
+
+        body = ""
+        print("===============")
+        for classe in classes:
+            print(classe)
+            status = "Failed"
+            color = COLOR_FAILED
+
+            if classes[classe]:
+                status = "Passed"
+                color = COLOR_PASSED
+
+            subtests = ('<p><h4>Executed tests</h4>'
+                        '<ul>\n')
+            for test in self.tests:
+                if classe != test.classe:
+                    continue
+
+                subtests += ('<li>'
+                             '<a name="{}">{}</a><b style="font-family: '
+                             'Verdana, sans-serif; color: {};"> {}</b>'
+                             '</li>').format(test.method, test.method, test.color, test.status)
+            subtests += "</ul>"
+
+            body += ('<div class="test">\n'
+            '<h2><a name="{}">test: {}</a></h2>'
+            '<p><h4>Test result</h4>{}</p>'
+            '{}'
+            '</div>\n'
+            ).format(classe, classe, status, subtests)
+
+        return body
+
+
 
 class ParserOGCAPIF(object):
     def __init__(self, xml, duration):
@@ -108,7 +154,7 @@ class ParserOGCAPIF(object):
 
     def dump_html(self, outdir, commit, branch):
         tests = self._parse()
-        toc = Toc(tests)
+        html = Html(tests)
 
         # generate html
         outpath = os.path.join(outdir, 'pyogctest_ogcapif.html')
@@ -145,12 +191,12 @@ class ParserOGCAPIF(object):
                     # toc
                     toc_tag = '{{TEMPLATE_TOC}}'
                     if toc_tag in line:
-                        line = toc.toc()
+                        line = html.toc()
 
-                    # # body
-                    # body_tag = '{{TEMPLATE_BODY}}'
-                    # if body_tag in line:
-                    #     line = body.body()
+                    # body
+                    body_tag = '{{TEMPLATE_BODY}}'
+                    if body_tag in line:
+                        line = html.body()
 
                     outfile.write(line)
 
