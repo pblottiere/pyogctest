@@ -39,6 +39,27 @@ class Test(object):
 
         return toc
 
+    def body(self):
+        result = ('<b style="font-family: Verdana, sans-serif; '
+                  'color: {};"> {}</b>'
+        ).format(self.color, self.status)
+
+        description = "Test {}.{} method.".format(self.name, self.method)
+
+        reporter = "There is nothing to report."
+        if self.status != "Passed":
+            reporter = "{}: {}".format(self.exception, self.message)
+
+        body = ('<div class="test">\n'
+        '<h2><a name="{}">test: {}.{}</a></h2>'
+        '<p><h4>Assertion</h4>{}</p>'
+        '<p><h4>Test result</h4>{}</p>'
+        '<p><h4>Message</h4>{}</p>'
+        '</div>\n'
+        ).format("id", self.name, self.method, description, result, reporter)
+
+        return body
+
     @property
     def color(self):
         color = COLOR_FAILED
@@ -113,9 +134,7 @@ class Html(object):
                 classes[test.classe] = False
 
         body = ""
-        print("===============")
         for classe in classes:
-            print(classe)
             status = "Failed"
             color = COLOR_FAILED
 
@@ -141,6 +160,12 @@ class Html(object):
             '{}'
             '</div>\n'
             ).format(classe, classe, status, subtests)
+
+            for test in self.tests:
+                if classe != test.classe:
+                    continue
+
+                body += test.body()
 
         return body
 
