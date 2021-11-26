@@ -276,8 +276,6 @@ class ParserOGCAPIF(object):
             else:
                 failures.append(test)
 
-        failures = []
-
         Logger.log("")
         if not failures:
             msg = " {} passed in {} seconds ".format(len(successes), self.duration)
