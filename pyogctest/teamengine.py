@@ -12,7 +12,7 @@ from enum import Enum
 
 NAME = "pyogctest"
 OGCCITE_WMS130 = "ogccite/ets-wms13"
-OGCCITE_OGCAPIF = "ogccite/ets-ogcapi-features10"
+OGCCITE_OGCAPIF = "ogccite/ets-ogcapi-features10:1.0-teamengine-5.4"
 
 
 class Teamengine(object):
