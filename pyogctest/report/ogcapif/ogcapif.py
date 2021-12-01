@@ -263,7 +263,7 @@ class ParserOGCAPIF(object):
             else:
                 results = results + Logger.Symbol.FAIL + ko + Logger.Symbol.ENDC
 
-            print("{} {}".format(f"{test.name}::{test.method}", results))
+            print("{}::{} {}".format(test.name, test.method, results))
 
         self._print_summary(tests)
 
@@ -284,7 +284,7 @@ class ParserOGCAPIF(object):
             Logger.log(" FAILURES ", center=True, symbol="=")
 
             for failure in failures:
-                name = f" {failure.name}::{failure.method} "
+                name = " {}::{} ".format(failure.name, failure.method)
                 Logger.log(name, color=Logger.Symbol.FAIL, center=True, symbol="_")
                 Logger.log("")
 
@@ -294,7 +294,7 @@ class ParserOGCAPIF(object):
 
                 if failure.message:
                     msg = failure.message.strip().replace("\n", "")
-                    Logger.log(f"Message: {msg}")
+                    Logger.log("Message: {}".format(msg))
                     Logger.log("")
 
                 if failure.method:
