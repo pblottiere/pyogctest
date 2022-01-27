@@ -11,6 +11,7 @@ from enum import Enum
 
 
 NAME = "pyogctest"
+OGCCITE_WMS111 = "ogccite/ets-wms11"
 OGCCITE_WMS130 = "ogccite/ets-wms13"
 OGCCITE_OGCAPIF = "ogccite/ets-ogcapi-features10:1.0-teamengine-5.4"
 
@@ -19,6 +20,7 @@ class Teamengine(object):
     class TestSuite(Enum):
 
         WMS130 = "wms130"
+        WMS111 = "wms111"
         OGCAPIF = "ogcapif"
 
         def __str__(self):
@@ -29,7 +31,9 @@ class Teamengine(object):
         self.port = port
         self.network = network
 
-        if self.suite == Teamengine.TestSuite.WMS130:
+        if self.suite == Teamengine.TestSuite.WMS111:
+            self.image = OGCCITE_WMS111
+        elif self.suite == Teamengine.TestSuite.WMS130:
             self.image = OGCCITE_WMS130
         elif self.suite == Teamengine.TestSuite.OGCAPIF:
             self.image = OGCCITE_OGCAPIF
@@ -70,7 +74,19 @@ class Teamengine(object):
     def run(self, url):
         request = None
 
-        if self.suite == Teamengine.TestSuite.WMS130:
+        if self.suite == Teamengine.TestSuite.WMS111:
+            getcapa = "{}?REQUEST=GetCapabilities%26VERSION=1.1.1%26SERVICE=WMS".format(
+                url
+            )
+            teamengine = "http://localhost:{}/teamengine/rest/suites/wms11/run".format(
+                self.port
+            )
+
+            request = (
+                "{0}?queryable=queryable&basic=basic&recommended=recommended&"
+                "capabilities-url={1}".format(teamengine, getcapa)
+            )
+        elif self.suite == Teamengine.TestSuite.WMS130:
             getcapa = "{}?REQUEST=GetCapabilities%26VERSION=1.3.0%26SERVICE=WMS".format(
                 url
             )
