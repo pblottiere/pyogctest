@@ -83,7 +83,7 @@ class Teamengine(object):
             )
 
             request = (
-                "{0}?queryable=queryable&basic=basic&recommended=recommended&"
+                "{0}?profile=queryable&recommended=recommended&"
                 "capabilities-url={1}".format(teamengine, getcapa)
             )
         elif self.suite == Teamengine.TestSuite.WMS130:
