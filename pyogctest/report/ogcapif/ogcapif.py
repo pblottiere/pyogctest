@@ -311,24 +311,25 @@ class ParserOGCAPIF(object):
         root = ET.fromstring(self.xml)
 
         tests = []
-        for test in root.find("suite").find("test"):
-            for child in test:
-                exception = ""
-                message = ""
-                for cc in child:
-                    if "exception" in cc.tag:
-                        exception = cc.attrib["class"]
-                        for ccc in cc:
-                            if "message" in ccc.tag:
-                                message = ccc.text
+        for test in root.find("suite").findall("test"):
+            for cls in test.findall("class"):
+                for meth in cls.findall("test-method"):
+                    if meth.attrib["status"] == "SKIP":
+                        continue
 
-                t = Test()
-                t.classe = test.attrib["name"].split(".")[-1]
-                t.name = "::".join(test.attrib["name"].split(".")[-2:])
-                t.method = child.attrib["name"]
-                t.result = child.attrib["status"]
-                t.exception = exception
-                t.message = message
-                tests.append(t)
+                    msg = ""
+                    exc = ""
+                    if meth.attrib["status"] != "PASS":
+                        msg = meth.find("exception").find("message").text.strip()
+                        exc = meth.find("exception").attrib["class"]
+
+                    t = Test()
+                    t.classe = cls.attrib["name"].split(".")[-1]
+                    t.name = "::".join(cls.attrib["name"].split(".")[-2:])
+                    t.method = meth.attrib["name"]
+                    t.result = meth.attrib["status"]
+                    t.exception = exc
+                    t.message = msg
+                    tests.append(t)
 
         return tests
