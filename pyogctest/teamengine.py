@@ -8,6 +8,7 @@ import time
 import docker
 import requests
 from enum import Enum
+from requests.auth import HTTPBasicAuth
 
 
 NAME = "pyogctest"
@@ -57,6 +58,10 @@ class Teamengine(object):
             )
         time.sleep(5)  # teamengine takes some time to start
 
+        # create missing output directory
+        client.containers.get(NAME).exec_run("mkdir -p /root/te_base/users/ogctest/rest/")
+
+
     def stop(self):
         client = docker.from_env()
 
@@ -91,7 +96,7 @@ class Teamengine(object):
             request = "{0}?iut={1}".format(teamengine, entrypoint)
 
         if request:
-            r = requests.get(request, headers={"Accept": "application/xml"})
+            r = requests.get(request, headers={"Accept": "application/xml"}, auth=HTTPBasicAuth('ogctest', 'ogctest'))
             return r.text
 
         return None
