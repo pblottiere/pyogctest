@@ -7,6 +7,7 @@ __copyright__ = "Copyright 2020, Paul Blottiere"
 from enum import Enum
 
 from pyogctest.teamengine import Teamengine
+from pyogctest.report.wms111.wms111 import ParserWMS111
 from pyogctest.report.wms130.wms130 import ParserWMS130
 from pyogctest.report.ogcapif.ogcapif import ParserOGCAPIF
 
@@ -14,7 +15,9 @@ from pyogctest.report.ogcapif.ogcapif import ParserOGCAPIF
 class Report(object):
     def __init__(self, suite, xml, duration):
         self.parser = None
-        if suite == Teamengine.TestSuite.WMS130:
+        if suite == Teamengine.TestSuite.WMS111:
+            self.parser = ParserWMS111(xml, duration)
+        elif suite == Teamengine.TestSuite.WMS130:
             self.parser = ParserWMS130(xml, duration)
         elif suite == Teamengine.TestSuite.OGCAPIF:
             self.parser = ParserOGCAPIF(xml, duration)
