@@ -1,5 +1,7 @@
 # pyogctest
 
+[![Release](https://img.shields.io/badge/release-1.1.3-green.svg)](https://github.com/pblottiere/pyogctest/releases)
+
 `pyogctest` is a Python tool to run OGC test suites from your terminal. This is
 done by using the REST API provided by
 [Teamengine](http://opengeospatial.github.io/teamengine/#). Then the resulting
