@@ -6,11 +6,11 @@ done by using the REST API provided by
 XML report is parsed and displayed to be humanly readable "à la" `pytest` (as
 much as possible).
 
-`pyogctest` have been developed and tested with [QGIS
-Server](https://docs.qgis.org/3.10/en/docs/server_manual/index.html) thanks to
-[QGIS.org](https://www.qgis.org/en/site/). However, there's nothing specific to
-QGIS Server itself (excepted for the HTML report CSS theme), so it should work
-with other map servers too (while not tested).
+`pyogctest` has been developed and tested with [QGIS
+Server](https://docs.qgis.org/3.10/en/docs/server_manual/index.html) in mind
+thanks to [QGIS.org](https://www.qgis.org/en/site/). However, there's nothing
+specific to QGIS Server itself (excepted for the HTML report CSS theme), so it
+should work with other map servers too (while not tested).
 
 For now, only the next test suites are supported:
 
@@ -27,7 +27,8 @@ $ git clone https://github.com/pblottiere/pyogctest
 $ cd pyogctest
 $ virtualenv venv
 $ source venv/bin/activate
-(venv) $ pip install -e .
+(venv) $ pip install poetry
+(venv) $ poetry install
 ````
 
 Some system dependencies are also necessary:

@@ -1,0 +1,27 @@
+[project]
+name = "pyogctest"
+version = "1.1.2"
+description = "Python tool to run OGC test suites from cli"
+authors = [
+    {name = "Paul Blottiere", email = "blottiere.paul@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "coloredlogs (>=15.0.1,<16.0.0)",
+    "docker (>=7.1.0,<8.0.0)",
+    "requests (>=2.32.3,<3.0.0)"
+]
+
+license-files = ["LICENSE"]
+
+[project.urls]
+Homepage = "https://github.com/pblottiere/pyogctest"
+Issues = "https://github.com/pblottiere/pyogctest/issues"
+
+[project.scripts]
+pyogctest = 'pyogctest.cli:run'
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
