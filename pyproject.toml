@@ -1,6 +1,6 @@
 [project]
 name = "pyogctest"
-version = "1.1.2"
+version = "1.1.3"
 description = "Python tool to run OGC test suites from cli"
 authors = [
     {name = "Paul Blottiere", email = "blottiere.paul@gmail.com"}
