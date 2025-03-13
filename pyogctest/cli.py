@@ -17,7 +17,7 @@ from pyogctest.report.report import Report
 from pyogctest.teamengine import Teamengine
 
 
-if __name__ == "__main__":
+def run():
     # aprse args
     parser = argparse.ArgumentParser()
 
