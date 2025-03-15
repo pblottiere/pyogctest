@@ -1,6 +1,7 @@
 # pyogctest
 
 [![Release](https://img.shields.io/badge/release-1.1.3-green.svg)](https://github.com/pblottiere/pyogctest/releases)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/pyogctest?color=blue)
 
 `pyogctest` is a Python tool to run OGC test suites from your terminal. This is
 done by using the REST API provided by
@@ -22,18 +23,7 @@ For now, only the next test suites are supported:
 
 ## Install
 
-To install Python dependencies:
-
-```` bash
-$ git clone https://github.com/pblottiere/pyogctest
-$ cd pyogctest
-$ virtualenv venv
-$ source venv/bin/activate
-(venv) $ pip install poetry
-(venv) $ poetry install
-````
-
-Some system dependencies are also necessary:
+Some system dependencies are necessary:
 
 - `docker` because Teamengine is used through Docker images provided on
   [Dockerhub](https://hub.docker.com/u/ogccite).
@@ -41,17 +31,34 @@ Some system dependencies are also necessary:
   `html` format option is activated)
 
 
+### From PyPI
+
+To install `pyogctest` from PyPI:
+
+```` bash
+$ pip install pyogctest
+````
+
+### From sources
+
+To install `pyogctest` from sources:
+
+```` bash
+$ git clone https://github.com/pblottiere/pyogctest
+$ cd pyogctest
+$ poetry install
+````
+
+
 ## Usage
 
-`pyogctest` allows to run OGC tests on a map server instance, so the first
-thing you need is an URL pointing to the map server itself. In this
-documentation, we're going to use an online instance of QGIS Server (the one
-used for official certifications).
+`pyogctest` allows you to run OGC tests on a map server instance, so the first
+step is to obtain a URL pointing to the server itself.
 
 To run the WMS 1.3.0 test suites:
 
 ```` bash
-$ ./pyogctest.py -s wms130 -u http://qgis4.qgis.org:8080/certification_qgisserver_master
+$ ./pyogctest.py -s wms130 -u http://qgisserver
 ======================================== OGC test session starts =========================================
 testsuite: WMS 1.3.0
 collected 183 items
@@ -68,7 +75,7 @@ queryable .........
 In case of failure, a descriptive message is displayed for all failing tests:
 
 ```` bash
-$ ./pyogctest.py -s wms130 -u http://qgis4.qgis.org:8080/certification_qgisserver_master
+$ ./pyogctest.py -s wms130 -u http://qgisserver
 ======================================== OGC test session starts =========================================
 testsuite: WMS 1.3.0
 collected 170 items
@@ -100,7 +107,7 @@ If you want more details about tests, you can use the `-v` option when the
 format is `prompt`:
 
 ```` bash
-$ ./pyogctest.py -s wms130 -v -u http://qgis4.qgis.org:8080/certification_qgisserver_master
+$ ./pyogctest.py -s wms130 -v -u http://qgisserver
 ======================================== OGC test session starts =========================================
 testsuite: WMS 1.3.0
 collected 183 items
@@ -121,7 +128,7 @@ activated. It's not a "real" regular expression parameter, only a simple
 pattern matching:
 
 ```` bash
-$ ./pyogctest.py -r transparent -s wms130 -v -u http://qgis4.qgis.org:8080/certification_qgisserver_master
+$ ./pyogctest.py -r transparent -s wms130 -v -u http://qgisserver
 ======================================== OGC test session starts =========================================
 testsuite: WMS 1.3.0
 collected 183 items
@@ -152,14 +159,14 @@ The default binding port for the Docker container is `8081` but you may have an
 error if this port is already in use on your system:
 
 ```` bash
-$ ./pyogctest.py -s wms130 http://qgis4.qgis.org:8080/certification_qgisserver_master
+$ ./pyogctest.py -s wms130 http://qgisserver
 docker.errors.APIError: 500 Server Error: Internal Server Error ("driver failed programming external connectivity on endpoint pyogctest: Error starting userland proxy: listen tcp 0.0.0.0:8081: bind: address already in use")
 ````
 
 In this case you have to use the `-p` option to use another port:
 
 ````
-$ ./pyogctest.py -s wms130 -p 8088 -u http://qgis4.qgis.org:8080/certification_qgisserver_master
+$ ./pyogctest.py -s wms130 -p 8088 -u http://qgisserver
 ````
 
 
